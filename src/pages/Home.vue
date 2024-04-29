@@ -4,6 +4,6 @@ import MainLayout from '@/components/layouts/MainLayout.vue'
 
 <template>
   <MainLayout>
-    
+    <h2 class="text-2xl font-bold">Welcome!</h2>
   </MainLayout>
 </template>
