@@ -2,6 +2,7 @@ import Home from '@/pages/Home.vue'
 import Login from '@/pages/Login.vue'
 import Redirections from '@/pages/redirections/index.vue'
 import RedirectionsDetail from '@/pages/redirections/detail.vue'
+import Redirect from '@/pages/redirect.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -12,6 +13,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/:id',
+      name: 'redirect',
+      component: Redirect 
     },
     {
       path: '/login',
