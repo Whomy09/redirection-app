@@ -9,9 +9,9 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import Input from '../ui/input/Input.vue';
-import { ref } from 'vue';
-import Badge from '../ui/badge/Badge.vue';
+import Input from '../ui/input/Input.vue'
+import { ref } from 'vue'
+import Badge from '../ui/badge/Badge.vue'
 
 const link = ref('')
 const links = ref<string[]>([])
@@ -22,14 +22,14 @@ function addLink() {
 }
 
 function truncateString(str: string, maxLength: number) {
-    // Check if the length of the string is greater than the maximum length
-    if (str.length > maxLength) {
-        // Truncate the string to the maximum length and add "..."
-        return str.substring(0, maxLength) + '...';
-    } else {
-        // If the string is equal to or shorter than the maximum length, return the same string
-        return str;
-    }
+  // Check if the length of the string is greater than the maximum length
+  if (str.length > maxLength) {
+    // Truncate the string to the maximum length and add "..."
+    return str.substring(0, maxLength) + '...'
+  } else {
+    // If the string is equal to or shorter than the maximum length, return the same string
+    return str
+  }
 }
 
 function removeLink(index: number) {
@@ -75,7 +75,7 @@ function removeLink(index: number) {
               <span>
                 {{ truncateString(link, 10) }}
               </span>
-              <i class="fa-solid fa-xmark hover:cursor-pointer" @click="removeLink(index)"/>
+              <i class="fa-solid fa-xmark hover:cursor-pointer" @click="removeLink(index)" />
             </Badge>
           </div>
         </div>

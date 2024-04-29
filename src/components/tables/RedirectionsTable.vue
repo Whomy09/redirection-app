@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 import Badge from '@/components/ui/badge/Badge.vue'
 
 const columns = [
@@ -59,7 +59,9 @@ const rows = ref([
           <Badge v-if="props.row.status === 'active'" class="bg-green-500">Active</Badge>
         </div>
         <div v-if="props.column.field === 'actions'">
-          <i class="fa-regular fa-clipboard text-xl hover:cursor-pointer" />
+          <router-link :to="{ name: 'redirections-detail', params: { id: props.row.id } }">
+            <i class="fa-regular fa-clipboard text-xl hover:cursor-pointer" />
+          </router-link>
         </div>
       </template>
 

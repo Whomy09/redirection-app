@@ -69,7 +69,7 @@ function getClass(name: string) {
       </div>
     </div>
 
-    <div class="w-full p-4 lg:py-6 lg:px-16">
+    <div class="w-full p-4 lg:py-6 lg:px-16 h-full">
       <slot />
     </div>
   </div>
