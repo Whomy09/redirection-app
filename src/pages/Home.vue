@@ -1,18 +1,79 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button'
+import * as z from 'zod'
+import { useForm } from 'vee-validate'
+import { useRouter } from 'vue-router'
+import { toTypedSchema } from '@vee-validate/zod'
+import Button from '@/components/ui/button/Button.vue'
+import { FormField, FormControl, FormMessage } from '@/components/ui/form'
+import {
+  Card,
+  CardTitle,
+  CardHeader,
+  CardFooter,
+  CardContent,
+  CardDescription,
+} from '@/components/ui/card/'
 
+const router = useRouter()
 
-const counter = ref(0)
+const formSchema = toTypedSchema(
+  z.object({
+    email: z.string().email(),
+    password: z.string().min(7)
+  })
+)
+
+const form = useForm({
+  validationSchema: formSchema
+})
+
+const onSubmit = form.handleSubmit((values) => {
+
+})
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto">
-    <Card>
-      <h1>Hello World!</h1>
-      <Button @click="counter++">send</Button>
-      <span>Counter: {{ counter }}</span>
+  <div class="h-screen flex justify-center items-center">
+    <Card class="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle class="text-2xl"> Login </CardTitle>
+        <CardDescription> Enter your email below to login to your account. </CardDescription>
+      </CardHeader>
+      <CardContent class="grid gap-4">
+        <form @submit="onSubmit">
+          <div class="flex flex-col gap-2 mt-2">
+            <FormField v-slot="{ componentField }" name="email">
+              <FormItem class="flex flex-col">
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    class="border border-gray-100 rounded-sm"
+                    v-bind="componentField"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField v-slot="{ componentField }" name="password">
+              <FormItem class="flex flex-col">
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    class="border border-gray-100 rounded-sm"
+                    v-bind="componentField"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+          </div>
+        </form>
+      </CardContent>
+      <CardFooter>
+        <Button class="w-full" type="submit" @click="onSubmit"> Login </Button>
+      </CardFooter>
     </Card>
   </div>
 </template>
