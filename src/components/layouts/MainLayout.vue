@@ -1,21 +1,9 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
+import { menus } from '@/constants/menus'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 const route = useRoute()
-
-const menus = [
-  {
-    name: 'home',
-    icon: 'fa-solid fa-house',
-    label: 'Home'
-  },
-  {
-    name: 'redirections',
-    icon: 'fa-solid fa-link',
-    label: 'Redirections'
-  }
-]
 
 function getClass(name: string) {
   console.log(name)
