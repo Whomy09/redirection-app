@@ -1,36 +1,54 @@
 import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
-import type { ICredentials } from '@/types/auth'
+import type { IUser } from '@/types/user'
 import { Auth } from '@/services/models/auth'
-import { useNotification } from '@/composables/useNotification'
-
-const { toastError, toastSuccess } = useNotification()
+import type { ICredentials } from '@/types/auth'
 
 export const useUserSession = defineStore('userSession', () => {
-  const token = useStorage('redirection_app_token', '')
-  const refreshToken = useStorage('redirection_app_refresh_token', '')
+  const accessToken = useStorage('redirection_app_access_token', '')
 
   const user = useStorage('redirection_app_user', {
+    uid: '',
+    name: '',
     email: '',
-    password: '',
-    uid: ''
+    active: false
   })
 
   async function login(credentials: ICredentials) {
-    try {
-      // const authResponse = await new Auth().login(credentials)
-      throw new Error('')
-      toastSuccess('Welcome!')
-    } catch (error) {
-      toastError('Email or password invalid!')
-    }
+    const loginResponse = await new Auth().login(credentials)
+    setAccessToken(loginResponse.accessToken)
+    setUser({
+      active: true,
+      name: 'Admin',
+      uid: loginResponse.uid,
+      email: credentials.email,
+    })
+  }
+
+  function logout() {
+    setAccessToken('')
+    setUser({
+      active: false,
+      email: '',
+      name: '',
+      uid: ''
+    })
+  }
+
+  function setAccessToken(newAccessToken: string) {
+    accessToken.value = newAccessToken
+  }
+
+  function setUser(newUser: IUser) {
+    user.value = newUser
   }
 
   return {
     user,
-    token,
-    refreshToken,
-
+    accessToken,
     login,
+    setUser,
+    logout,
+    setAccessToken
   }
 })

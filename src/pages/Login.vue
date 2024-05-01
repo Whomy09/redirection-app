@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import * as z from 'zod'
+import { ref, computed } from 'vue'
 import { useForm } from 'vee-validate'
 import { useRouter } from 'vue-router'
 import { toTypedSchema } from '@vee-validate/zod'
 import Input from '@/components/ui/input/Input.vue'
 import { useUserSession } from '@/stores/userSession'
 import Button from '@/components/ui/button/Button.vue'
+import { useNotification } from '@/composables/useNotification'
 import { FormField, FormControl, FormMessage } from '@/components/ui/form'
 import {
   Card,
@@ -17,8 +19,12 @@ import {
 } from '@/components/ui/card/'
 
 const router = useRouter()
-
 const { login } = useUserSession()
+const { toastError, toastSuccess } = useNotification()
+
+const isLoading = ref(false)
+
+const textButton = computed(() => isLoading.value ? 'Loading...' : 'Login')
 
 const formSchema = toTypedSchema(
   z.object({
@@ -32,7 +38,16 @@ const form = useForm({
 })
 
 const onSubmit = form.handleSubmit(async (credentials) => {
-  await login(credentials)
+  try {
+    isLoading.value = true
+    await login(credentials)
+    toastSuccess('Welcome!')
+    router.push({ name: 'home' })
+  } catch (error) {
+    toastError('Email or password invalid!')
+  } finally {
+    isLoading.value = false
+  }
 })
 </script>
 
@@ -76,7 +91,9 @@ const onSubmit = form.handleSubmit(async (credentials) => {
         </form>
       </CardContent>
       <CardFooter>
-        <Button class="w-full" type="submit" @click="onSubmit"> Login </Button>
+        <Button class="w-full" type="submit" @click="onSubmit" :disabled="isLoading"> 
+          {{ textButton }}
+        </Button>
       </CardFooter>
     </Card>
   </div>

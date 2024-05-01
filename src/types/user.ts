@@ -1,5 +1,6 @@
 export interface IUser {
   uid: string
   name: string
-  email: string
+  email: string,
+  active: boolean
 }
