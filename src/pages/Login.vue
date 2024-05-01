@@ -3,6 +3,8 @@ import * as z from 'zod'
 import { useForm } from 'vee-validate'
 import { useRouter } from 'vue-router'
 import { toTypedSchema } from '@vee-validate/zod'
+import Input from '@/components/ui/input/Input.vue'
+import { useUserSession } from '@/stores/userSession'
 import Button from '@/components/ui/button/Button.vue'
 import { FormField, FormControl, FormMessage } from '@/components/ui/form'
 import {
@@ -13,9 +15,10 @@ import {
   CardContent,
   CardDescription
 } from '@/components/ui/card/'
-import Input from '@/components/ui/input/Input.vue'
 
 const router = useRouter()
+
+const { login } = useUserSession()
 
 const formSchema = toTypedSchema(
   z.object({
@@ -28,9 +31,8 @@ const form = useForm({
   validationSchema: formSchema
 })
 
-const onSubmit = form.handleSubmit((values) => {
-  console.log(values)
-  router.push({ name: 'home' })
+const onSubmit = form.handleSubmit(async (credentials) => {
+  await login(credentials)
 })
 </script>
 

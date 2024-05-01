@@ -1,3 +1,10 @@
+<script lang="ts" setup>
+import Toaster from '@/components/ui/toast/Toaster.vue'
+</script>
+
 <template>
-  <RouterView />
+  <div>
+    <Toaster />
+    <RouterView />
+  </div>
 </template>
