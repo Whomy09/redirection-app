@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardFooter,
   CardContent,
-  CardDescription,
+  CardDescription
 } from '@/components/ui/card/'
 import Input from '@/components/ui/input/Input.vue'
 
@@ -62,7 +62,7 @@ const onSubmit = form.handleSubmit((values) => {
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input
-                    type="text"
+                    type="password"
                     class="border border-gray-100 rounded-sm"
                     v-bind="componentField"
                   />
