@@ -1,8 +1,8 @@
 import Home from '@/pages/Home.vue'
 import Login from '@/pages/Login.vue'
+import Redirect from '@/pages/redirect.vue'
 import Redirections from '@/pages/redirections/index.vue'
 import RedirectionsDetail from '@/pages/redirections/detail.vue'
-import Redirect from '@/pages/redirect.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -12,28 +12,37 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: {
+        can: 'is-user-active',
+        onDeniedRoute: '/login'
+      }
     },
     {
       path: '/:id',
       name: 'redirect',
-      component: Redirect 
+      component: Redirect
     },
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: Login,
+      meta: {
+        can: 'is-user-inactive',
+        onDeniedRoute: '/'
+      }
     },
     {
       path: '/redirections',
       name: 'redirections',
-      component: Redirections
+      component: Redirections,
+      children: []
     },
     {
       path: '/redirections/:id',
       name: 'redirections-detail',
       component: RedirectionsDetail
-    },
+    }
   ]
 })
 
