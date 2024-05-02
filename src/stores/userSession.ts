@@ -3,6 +3,7 @@ import { useStorage } from '@vueuse/core'
 import type { IUser } from '@/types/user'
 import { Auth } from '@/services/models/auth'
 import type { ICredentials } from '@/types/auth'
+import { auth } from '@/services/firebase'
 
 export const useUserSession = defineStore('userSession', () => {
   const accessToken = useStorage('redirection_app_access_token', '')
@@ -33,6 +34,7 @@ export const useUserSession = defineStore('userSession', () => {
       name: '',
       uid: ''
     })
+    auth.signOut()
   }
 
   function setAccessToken(newAccessToken: string) {
