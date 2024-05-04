@@ -1,6 +1,7 @@
 import Home from '@/pages/Home.vue'
 import Login from '@/pages/Login.vue'
 import Redirect from '@/pages/redirect.vue'
+import WrongRedirect from '@/pages/wrong-redirect.vue'
 import Redirections from '@/pages/redirections/index.vue'
 import RedirectionsDetail from '@/pages/redirections/detail.vue'
 
@@ -22,6 +23,11 @@ const router = createRouter({
       path: '/:id',
       name: 'redirect',
       component: Redirect
+    },
+    {
+      path: '/wrong-redirect',
+      name: 'wrong-redirect',
+      component: WrongRedirect
     },
     {
       path: '/login',
