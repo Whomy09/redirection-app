@@ -1,15 +1,13 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
 import Badge from '../ui/badge/Badge.vue';
 
 type Status = 'ACTIVE' | 'INACTIVE'
 type Types = { label: string, color: string }
 
-const props = withDefaults(defineProps<{
-  status: Status  
-}>(),
-{
-  status: 'ACTIVE'
-})
+const props = defineProps<{
+  status: Status | undefined
+}>()
 
 const TYPES: Record<Status, Types> = {
   ACTIVE: {
@@ -22,9 +20,9 @@ const TYPES: Record<Status, Types> = {
   }
 }
 
-const type = TYPES[props.status]
+const type = computed(() => props.status ? TYPES[props.status] : '')
 </script>
 
 <template>
-  <Badge :class="type.color">{{ type.label }}</Badge>
+  <Badge v-if="type" :class="type.color">{{ type.label }}</Badge>
 </template>

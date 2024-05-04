@@ -1,6 +1,6 @@
 import { db } from '../firebase'
 import type { IRedirection, IRedirectionForm } from '@/types/redirection'
-import { doc, setDoc, collection, getDocs, getDoc } from 'firebase/firestore'
+import { doc, setDoc, collection, getDocs, getDoc, updateDoc } from 'firebase/firestore'
 
 export class Redirection {
   public async create(redirectionData: IRedirectionForm) {
@@ -34,6 +34,11 @@ export class Redirection {
       throw new Error('Redirection not exist')
     }
     return { id, ...docSnap.data() } as IRedirection
+  }
+
+  public async update(id: string, data: Partial<IRedirection>) {
+    const docRef = doc(db, 'redirections', id)
+    await updateDoc(docRef, { ...data })
   }
 
 }
