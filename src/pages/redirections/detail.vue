@@ -1,23 +1,43 @@
 <script lang="ts" setup>
-import MainLayout from '@/components/layouts/MainLayout.vue';
-import Badge from '@/components/ui/badge/Badge.vue';
-import Button from '@/components/ui/button/Button.vue';
-import { Card, CardDescription, CardTitle } from '@/components/ui/card';
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import Badge from '@/components/ui/badge/Badge.vue'
+import Button from '@/components/ui/button/Button.vue'
+import type { IRedirection } from '@/types/redirection'
+import { Redirection } from '@/services/models/redirection'
+import MainLayout from '@/components/layouts/MainLayout.vue'
+import { useNotification } from '@/composables/useNotification'
+import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 
 const route = useRoute()
+const router = useRouter()
+const { toastError } = useNotification()
 
-const links = ref([
-  'https://www.facebook.com/',
-  'https://www.instagram.com/',
-  'https://twitter.com/home'
-])
+const redirectionId = route.params.id as string
+
+const isLoading = ref(false)
+const redirection = ref<IRedirection>()
+
+async function getRedirection() {
+  try {
+    isLoading.value = true
+    redirection.value = await new Redirection().getById(redirectionId)
+  } catch (error: any) {
+    toastError(error.message)
+    router.push({ name: 'redirections' })
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(async () => {
+  await getRedirection()
+})
 </script>
 
 <template>
   <MainLayout>
-    <h2 class="text-xl font-bold">Detail - {{ route.params.id }}</h2>
+    <h2 class="text-xl font-bold">Detail - {{ redirection?.name }}</h2>
 
     <Button class="mt-8">
       <router-link :to="{ name: 'redirections' }">
@@ -26,15 +46,11 @@ const links = ref([
     </Button>
 
     <Card class="h-1/2 mt-8 p-8">
-      <CardTitle>
-        Links
-      </CardTitle>
-      <CardDescription>
-        Details about your redirect will be displayed here.
-      </CardDescription>
+      <CardTitle> Links </CardTitle>
+      <CardDescription> Details about your redirect will be displayed here. </CardDescription>
 
       <div class="flex flex-wrap gap-4 mt-4">
-        <Badge v-for="(link, index) in links" :key="index">
+        <Badge v-for="(link, index) in redirection?.links" :key="index">
           {{ link }}
         </Badge>
       </div>
