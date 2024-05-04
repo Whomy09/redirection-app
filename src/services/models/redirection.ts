@@ -5,11 +5,13 @@ import { doc, setDoc, collection, getDocs, getDoc, updateDoc } from 'firebase/fi
 export class Redirection {
   public async create(redirectionData: IRedirectionForm) {
     const docRef = doc(db, 'redirections', redirectionData.id)
-    await setDoc(docRef, {
+    const data = {
       ...redirectionData,
       status: 'ACTIVE',
       createdAt: new Date()
-    })
+    }
+    await setDoc(docRef, data)
+    return data
   }
 
   public async getAll() {
@@ -30,7 +32,7 @@ export class Redirection {
   public async getById(id: string) {
     const docRef = doc(db, 'redirections', id)
     const docSnap = await getDoc(docRef)
-    if(!docSnap.exists()) {
+    if (!docSnap.exists()) {
       throw new Error('Redirection not exist')
     }
     return { id, ...docSnap.data() } as IRedirection
@@ -40,5 +42,4 @@ export class Redirection {
     const docRef = doc(db, 'redirections', id)
     await updateDoc(docRef, { ...data })
   }
-
 }
