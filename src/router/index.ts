@@ -5,6 +5,8 @@ import WrongRedirect from '@/pages/wrong-redirect.vue'
 import Redirections from '@/pages/redirections/index.vue'
 import RedirectionsDetail from '@/pages/redirections/detail.vue'
 
+import { storeToRefs } from 'pinia'
+import { useUserSession } from '@/stores/userSession'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -50,6 +52,14 @@ const router = createRouter({
       component: RedirectionsDetail
     }
   ]
+})
+
+router.beforeEach((to, _, next) => {
+  const userSession = useUserSession()
+  const { user } = storeToRefs(userSession)
+  
+  if (to.name !== 'login' && !user.value.active) next({ name: 'login' })
+  else next()
 })
 
 export default router
