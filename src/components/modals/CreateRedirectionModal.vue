@@ -25,9 +25,11 @@ import {
 const rules = {
   id: { MESSAGE_REQUIRED },
   name: { MESSAGE_REQUIRED },
-  links: { minLeng: helpers.withMessage('Debe de ingresar al menos un link', (value: string[]) => {
-    return value.length > 0
-  }) }
+  links: {
+    minLeng: helpers.withMessage('Debe de ingresar al menos un link', (value: string[]) => {
+      return value.length > 0
+    })
+  }
 }
 
 const { toastError, toastSuccess } = useNotification()
@@ -63,9 +65,7 @@ function clearForm() {
 async function createRedirection() {
   try {
     const isFormValid = await v$.value.$validate()
-
     if (!isFormValid) return
-
     await new Redirection().create(redirection.value)
     clearForm()
     toastSuccess('Redirect created successfully')
@@ -92,7 +92,6 @@ onMounted(() => {
           <DialogTitle>Create Redirection</DialogTitle>
           <DialogDescription> This is a form for create a redirection </DialogDescription>
         </DialogHeader>
-
         <div class="flex flex-wrap gap-4">
           <div class="w-full">
             <label>ID</label>
@@ -116,7 +115,6 @@ onMounted(() => {
               <ValidateLabel :v$="v$.links" />
             </div>
           </div>
-
           <div class="flex flex-wrap gap-2">
             <Badge v-for="(link, index) in redirection.links" :key="index" class="flex gap-3">
               <span>
@@ -126,7 +124,6 @@ onMounted(() => {
             </Badge>
           </div>
         </div>
-
         <DialogFooter>
           <Button @click="createRedirection"> Save </Button>
         </DialogFooter>
