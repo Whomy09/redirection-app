@@ -1,4 +1,4 @@
-import { format, fromUnixTime } from "date-fns"
+import { format, toDate, fromUnixTime } from "date-fns"
 
 export function truncateString(str: string, maxLength: number) {
   // Check if the length of the string is greater than the maximum length
@@ -11,6 +11,9 @@ export function truncateString(str: string, maxLength: number) {
   }
 }
 
-export function formatDate(seconds: number) {
-  return format(fromUnixTime(seconds), 'dd/MM/yyyy')
+export function formatDate(value: number | string | Date) {
+  let date
+  if (typeof value === 'number') date = fromUnixTime(value)
+  else date = toDate(value)
+  return format(date, 'dd/MM/yyyy')
 }

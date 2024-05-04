@@ -1,32 +1,15 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { formatDate } from '@/helpers'
 import StatusLabel from '../base/StatusLabel.vue'
-import type { IRedirection } from '@/types/redirection'
-import { Redirection } from '@/services/models/redirection'
+import { useRedirectionts } from '@/stores/redirections'
 import MultipleSkeleton from '../base/MultipleSkeleton.vue'
-import { useNotification } from '@/composables/useNotification'
 import { columnsRedirectionTable as columns } from '@/constants/columns'
 
-const { toastError } = useNotification()
+const redirectionsStore = useRedirectionts()
 
 const isLoading = ref(false)
-const rows = ref<IRedirection[]>([])
-
-async function getRedirections() {
-  try {
-    isLoading.value = true
-    rows.value = await new Redirection().getAll()
-  } catch (error) {
-    toastError('Error in loading redirections')
-  } finally {
-    isLoading.value = false
-  }
-}
-
-onMounted(async () => {
-  await getRedirections()
-})
+const rows = computed(() => redirectionsStore.redirections)
 </script>
 
 <template>
@@ -58,7 +41,7 @@ onMounted(async () => {
     >
       <template #table-row="props">
         <div v-if="props.column.field === 'createdAt'">
-          <span>{{ formatDate(props.row.createdAt.seconds) }}</span>
+          <span>{{ formatDate(props.row.createdAt.seconds || props.row.createdAt) }}</span>
         </div>
         <div v-if="props.column.field === 'status'">
           <StatusLabel :status="props.row.status" />

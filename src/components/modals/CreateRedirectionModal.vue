@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import Badge from '../ui/badge/Badge.vue'
 import Input from '../ui/input/Input.vue'
 import { truncateString } from '@/helpers'
+import { computed, onMounted, ref } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers } from '@vuelidate/validators'
 import { MESSAGE_REQUIRED } from '@/constants/rules'
 import ValidateLabel from '../base/ValidateLabel.vue'
 import Button from '@/components/ui/button/Button.vue'
+import { useRedirectionts } from '@/stores/redirections'
 import type { IRedirectionForm } from '@/types/redirection'
-import { Redirection } from '@/services/models/redirection'
 import { useNotification } from '@/composables/useNotification'
 import {
   Dialog,
@@ -32,6 +32,7 @@ const rules = {
   }
 }
 
+const redirectionStore = useRedirectionts()
 const { toastError, toastSuccess } = useNotification()
 
 const link = ref('')
@@ -70,7 +71,7 @@ async function createRedirection() {
     isLoading.value = true
     const isFormValid = await v$.value.$validate()
     if (!isFormValid) return
-    await new Redirection().create(redirection.value)
+    await redirectionStore.create(redirection.value)
     clearForm()
     toastSuccess('Redirect created successfully')
   } catch (error) {
