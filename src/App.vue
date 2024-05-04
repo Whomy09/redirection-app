@@ -13,7 +13,7 @@ const { redirections } = storeToRefs(redirectionsStore)
 
 watch(user, async (newUser) => {
   if (newUser.active) {
-    redirections.value = await new Redirection().getAll() 
+    redirections.value = await new Redirection().getByUser(user.value.uid) 
   }
 })
 </script>

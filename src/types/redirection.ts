@@ -6,6 +6,7 @@ export interface IRedirectionForm {
 
 export interface IRedirection {
   id: string
+  uid: String
   name: string
   links: string[]
   createdAt: Date

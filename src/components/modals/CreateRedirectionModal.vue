@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { v4 as uuidv4 } from 'uuid'
+import { storeToRefs } from 'pinia'
 import Badge from '../ui/badge/Badge.vue'
 import Input from '../ui/input/Input.vue'
 import { truncateString } from '@/helpers'
@@ -7,6 +8,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers } from '@vuelidate/validators'
 import { MESSAGE_REQUIRED } from '@/constants/rules'
+import { useUserSession } from '@/stores/userSession'
 import ValidateLabel from '../base/ValidateLabel.vue'
 import Button from '@/components/ui/button/Button.vue'
 import { useRedirectionts } from '@/stores/redirections'
@@ -32,11 +34,13 @@ const rules = {
   }
 }
 
+const userSession = useUserSession()
 const redirectionStore = useRedirectionts()
 const { toastError, toastSuccess } = useNotification()
 
 const link = ref('')
 const isLoading = ref(false)
+const { user } = storeToRefs(userSession)
 
 const redirection = ref<IRedirectionForm>({
   name: '',
@@ -71,7 +75,7 @@ async function createRedirection() {
     isLoading.value = true
     const isFormValid = await v$.value.$validate()
     if (!isFormValid) return
-    await redirectionStore.create(redirection.value)
+    await redirectionStore.create(user.value.uid, redirection.value)
     clearForm()
     toastSuccess('Redirect created successfully')
   } catch (error) {
