@@ -4,15 +4,16 @@ import { useRoute, useRouter } from 'vue-router'
 import Badge from '@/components/ui/badge/Badge.vue'
 import Button from '@/components/ui/button/Button.vue'
 import type { IRedirection } from '@/types/redirection'
-import { Redirection } from '@/services/models/redirection'
+import { useRedirectionts } from '@/stores/redirections'
+import StatusLabel from '@/components/base/StatusLabel.vue'
 import MainLayout from '@/components/layouts/MainLayout.vue'
 import { useNotification } from '@/composables/useNotification'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
-import StatusLabel from '@/components/base/StatusLabel.vue'
 
 const route = useRoute()
 const router = useRouter()
 const { toastError } = useNotification()
+const redirectionsStore = useRedirectionts()
 
 const redirectionId = route.params.id as string
 
@@ -22,7 +23,7 @@ const redirection = ref<IRedirection>()
 async function getRedirection() {
   try {
     isLoading.value = true
-    redirection.value = await new Redirection().getById(redirectionId)
+    redirection.value = await redirectionsStore.get(redirectionId)
   } catch (error: any) {
     toastError(error.message)
     router.push({ name: 'redirections' })

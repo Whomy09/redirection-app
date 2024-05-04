@@ -25,7 +25,7 @@ export const useRedirectionts = defineStore('redirections', () => {
     })
   }
 
-  async function get(id: string) {
+  async function get(id: string): Promise<IRedirection> {
     const searchedRedirect = redirections.value.find((redirection) => redirection.id === id)
     if (searchedRedirect) return searchedRedirect
     return await redirectionDB.getById(id)
