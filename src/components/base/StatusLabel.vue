@@ -12,11 +12,11 @@ const props = defineProps<{
 const TYPES: Record<Status, Types> = {
   ACTIVE: {
     label: 'Active',
-    color: 'bg-green-500'
+    color: 'bg-green-500 hover:bg-green-500'
   },
   INACTIVE: {
     label: 'Inactive',
-    color: 'bg-red-500'
+    color: 'bg-red-500 hover:bg-red-500'
   }
 }
 
