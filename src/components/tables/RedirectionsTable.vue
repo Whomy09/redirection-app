@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
+import { formatDate } from '@/helpers'
 import Badge from '@/components/ui/badge/Badge.vue'
 import type { IRedirection } from '@/types/redirection'
 import { Redirection } from '@/services/models/redirection'
 import MultipleSkeleton from '../base/MultipleSkeleton.vue'
-import { columnsRedirectionTable as columns } from '@/constants/columns'
 import { useNotification } from '@/composables/useNotification'
+import { columnsRedirectionTable as columns } from '@/constants/columns'
 
 const { toastError } = useNotification()
 
@@ -56,6 +57,9 @@ onMounted(async () => {
       style-class="vgt-table"
     >
       <template #table-row="props">
+        <div v-if="props.column.field === 'createdAt'">
+          <span>{{ formatDate(props.row.createdAt.seconds) }}</span>
+        </div>
         <div v-if="props.column.field === 'status'">
           <Badge v-if="props.row.status === 'ACTIVE'" class="bg-green-500">Active</Badge>
           <Badge v-if="props.row.status === 'INACTIVE'" class="bg-red-500">Inactive</Badge>
