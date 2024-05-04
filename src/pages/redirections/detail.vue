@@ -9,6 +9,7 @@ import StatusLabel from '@/components/base/StatusLabel.vue'
 import MainLayout from '@/components/layouts/MainLayout.vue'
 import { useNotification } from '@/composables/useNotification'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
+import EditRedirectionModal from '@/components/modals/EditRedirectionModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -50,7 +51,13 @@ onMounted(async () => {
     <Card class="h-1/2 mt-8 p-8">
       <div class="flex justify-between">
         <CardTitle>Links</CardTitle>
-        <StatusLabel :status="redirection?.status" />
+        <div class="flex gap-4">
+          <StatusLabel :status="redirection?.status" />
+          <EditRedirectionModal
+            :redirection-prop="redirection as IRedirection"
+            @update="getRedirection"
+          />
+        </div>
       </div>
       <CardDescription> Details about your redirect will be displayed here. </CardDescription>
 
