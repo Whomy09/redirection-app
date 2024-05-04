@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import Badge from '../ui/badge/Badge.vue'
 import Input from '../ui/input/Input.vue'
@@ -35,12 +35,15 @@ const rules = {
 const { toastError, toastSuccess } = useNotification()
 
 const link = ref('')
+const isLoading = ref(false)
 
 const redirection = ref<IRedirectionForm>({
   name: '',
   links: [],
   id: uuidv4()
 })
+
+const textForButton = computed(() => isLoading.value ? 'loading...' : 'Save')
 const v$ = useVuelidate(rules, redirection)
 
 function addLink() {
@@ -64,6 +67,7 @@ function clearForm() {
 
 async function createRedirection() {
   try {
+    isLoading.value = true
     const isFormValid = await v$.value.$validate()
     if (!isFormValid) return
     await new Redirection().create(redirection.value)
@@ -71,6 +75,8 @@ async function createRedirection() {
     toastSuccess('Redirect created successfully')
   } catch (error) {
     toastError('Error creating redirect')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -125,7 +131,7 @@ onMounted(() => {
           </div>
         </div>
         <DialogFooter>
-          <Button @click="createRedirection"> Save </Button>
+          <Button @click="createRedirection" :disabled="isLoading"> {{ textForButton }} </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
