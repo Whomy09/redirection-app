@@ -1,38 +1,39 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import Badge from '@/components/ui/badge/Badge.vue'
+import type { IRedirection } from '@/types/redirection'
+import { Redirection } from '@/services/models/redirection'
+import MultipleSkeleton from '../base/MultipleSkeleton.vue'
+import { columnsRedirectionTable as columns } from '@/constants/columns'
+import { useNotification } from '@/composables/useNotification'
 
-const columns = [
-  {
-    label: 'ID',
-    field: 'id'
-  },
-  {
-    label: 'Name',
-    field: 'name'
-  },
-  {
-    label: 'Status',
-    field: 'status'
-  },
-  {
-    label: 'Actions',
-    field: 'actions'
-  }
-]
+const { toastError } = useNotification()
 
-const rows = ref([
-  {
-    id: '0101011001',
-    name: 'Social Network',
-    status: 'active'
+const isLoading = ref(false)
+const rows = ref<IRedirection[]>([])
+
+async function getRedirections() {
+  try {
+    isLoading.value = true
+    rows.value = await new Redirection().getAll()
+  } catch (error) {
+    toastError('Error in loading redirections')
+  } finally {
+    isLoading.value = false
   }
-])
+}
+
+onMounted(async () => {
+  await getRedirections()
+})
 </script>
 
 <template>
   <div>
+    <MultipleSkeleton v-if="isLoading" :length="15" />
+
     <vue-good-table
+      v-else
       v-bind="{ columns, rows }"
       :sort-options="{
         enabled: false
@@ -56,7 +57,8 @@ const rows = ref([
     >
       <template #table-row="props">
         <div v-if="props.column.field === 'status'">
-          <Badge v-if="props.row.status === 'active'" class="bg-green-500">Active</Badge>
+          <Badge v-if="props.row.status === 'ACTIVE'" class="bg-green-500">Active</Badge>
+          <Badge v-if="props.row.status === 'INACTIVE'" class="bg-red-500">Inactive</Badge>
         </div>
         <div v-if="props.column.field === 'actions'">
           <router-link :to="{ name: 'redirections-detail', params: { id: props.row.id } }">
