@@ -8,6 +8,7 @@ import { Redirection } from '@/services/models/redirection'
 import MainLayout from '@/components/layouts/MainLayout.vue'
 import { useNotification } from '@/composables/useNotification'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
+import StatusLabel from '@/components/base/StatusLabel.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -46,7 +47,10 @@ onMounted(async () => {
     </Button>
 
     <Card class="h-1/2 mt-8 p-8">
-      <CardTitle> Links </CardTitle>
+      <div class="flex justify-between">
+        <CardTitle>Links</CardTitle>
+        <StatusLabel :status="redirection?.status" />
+      </div>
       <CardDescription> Details about your redirect will be displayed here. </CardDescription>
 
       <div class="flex flex-wrap gap-4 mt-4">
