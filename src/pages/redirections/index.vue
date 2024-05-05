@@ -12,7 +12,6 @@ import { computed } from 'vue'
 const redirectionsStore = useRedirectionts()
 const { redirections } = storeToRefs(redirectionsStore)
 
-
 const { isSearching, searchItems, searchTerm } = useSearch<IRedirection>(
   ['name', 'status'],
   redirections
