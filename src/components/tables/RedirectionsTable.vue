@@ -1,23 +1,17 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
 import { formatDate } from '@/helpers'
 import StatusLabel from '../base/StatusLabel.vue'
-import { useRedirectionts } from '@/stores/redirections'
-import MultipleSkeleton from '../base/MultipleSkeleton.vue'
+import type { IRedirection } from '@/types/redirection'
 import { columnsRedirectionTable as columns } from '@/constants/columns'
 
-const redirectionsStore = useRedirectionts()
-
-const isLoading = ref(false)
-const rows = computed(() => redirectionsStore.redirections)
+defineProps<{
+  rows: IRedirection[]
+}>()
 </script>
 
 <template>
   <div>
-    <MultipleSkeleton v-if="isLoading" :length="15" />
-
     <vue-good-table
-      v-else
       v-bind="{ columns, rows }"
       :sort-options="{
         enabled: false
