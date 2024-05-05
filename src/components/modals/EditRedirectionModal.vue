@@ -93,8 +93,8 @@ onMounted(() => {
   <div>
     <Dialog>
       <DialogTrigger>
-        <Button>
-          <i class="fa-solid fa-pen-to-square"></i>
+        <Button class="bg-transaparent hover:bg-slate-100">
+          <i class="fa-solid fa-pen-to-square text-black"></i>
         </Button>
       </DialogTrigger>
       <DialogContent>

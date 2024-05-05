@@ -6,6 +6,7 @@ import Button from '@/components/ui/button/Button.vue'
 import type { IRedirection } from '@/types/redirection'
 import { useRedirectionts } from '@/stores/redirections'
 import StatusLabel from '@/components/base/StatusLabel.vue'
+import { useSweetalert } from '@/composables/useSweetalert'
 import MainLayout from '@/components/layouts/MainLayout.vue'
 import { useNotification } from '@/composables/useNotification'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
@@ -13,6 +14,7 @@ import EditRedirectionModal from '@/components/modals/EditRedirectionModal.vue'
 
 const route = useRoute()
 const router = useRouter()
+const { showQuestion } = useSweetalert()
 const { toastError } = useNotification()
 const redirectionsStore = useRedirectionts()
 
@@ -31,6 +33,17 @@ async function getRedirection() {
   } finally {
     isLoading.value = false
   }
+}
+
+async function updateRedirectionStatus() {
+  const isConfirmed = await showQuestion(
+    'Importante',
+    '¿Estas seguro de que quieres cambiar el estado?'
+  )
+  if (!isConfirmed) return
+  const newStatus = redirection.value?.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+  await redirectionsStore.update(redirectionId, { status: newStatus })
+  getRedirection()
 }
 
 onMounted(async () => {
@@ -52,7 +65,9 @@ onMounted(async () => {
       <div class="flex justify-between">
         <CardTitle>Links</CardTitle>
         <div class="flex gap-4">
-          <StatusLabel :status="redirection?.status" />
+          <button class="hover:cursor-pointer">
+            <StatusLabel :status="redirection?.status" @click="updateRedirectionStatus" />
+          </button>
           <EditRedirectionModal
             :redirection-prop="redirection as IRedirection"
             @update="getRedirection"
