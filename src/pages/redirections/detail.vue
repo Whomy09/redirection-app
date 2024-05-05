@@ -15,8 +15,8 @@ import EditRedirectionModal from '@/components/modals/EditRedirectionModal.vue'
 const route = useRoute()
 const router = useRouter()
 const { showQuestion } = useSweetalert()
-const { toastError } = useNotification()
 const redirectionsStore = useRedirectionts()
+const { toastError, toastSuccess } = useNotification()
 
 const redirectionId = route.params.id as string
 
@@ -44,6 +44,11 @@ async function updateRedirectionStatus() {
   const newStatus = redirection.value?.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
   await redirectionsStore.update(redirectionId, { status: newStatus })
   getRedirection()
+}
+
+function copyToClipboard() {
+  navigator.clipboard.writeText(`https://redirection-app-141e9.web.app/${redirectionId}`)
+  toastSuccess('Link copied to clipboard')
 }
 
 onMounted(async () => {
@@ -74,9 +79,19 @@ onMounted(async () => {
           />
         </div>
       </div>
-      <CardDescription> Details about your redirect will be displayed here. </CardDescription>
+      <CardDescription class="flex flex-col gap-1">
+        <div class="flex gap-1 items-center">
+          <span class="font-bold text-gray-900">Redirection link:</span>
+          <span>{{ `https://redirection-app-141e9.web.app/${redirection?.id}` }}</span>
+          <i
+            class="fa-solid fa-copy text-lg text-black hover:cursor-pointer"
+            @click="copyToClipboard"
+          />
+        </div>
+        <p>Details about your redirect will be displayed here.</p>
+      </CardDescription>
 
-      <div class="flex flex-wrap gap-4 mt-4">
+      <div class="flex flex-wrap gap-1 mt-4">
         <Badge v-for="(link, index) in redirection?.links" :key="index">
           {{ link }}
         </Badge>
