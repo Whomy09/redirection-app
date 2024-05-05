@@ -22,7 +22,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/:id',
+      path: '/redirect/:id',
       name: 'redirect',
       component: Redirect
     },
