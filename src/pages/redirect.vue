@@ -23,13 +23,19 @@ function redirectUser() {
 }
 
 async function getRedirection() {
-  const redirection = await new Redirection().getById(redirectionId)
-  links.value = redirection.links
+  return await new Redirection().getById(redirectionId)
 }
 
 async function handleRedirectUser() {
   try {
-    await getRedirection()
+    const redirection = await getRedirection()
+
+    if (redirection.status === 'INACTIVE') {
+      router.push({ name: 'inactive-redirect' })
+      return
+    }
+
+    links.value = redirection.links
     redirectUser()
   } catch (error) {
     router.push({ name: 'wrong-redirect' })

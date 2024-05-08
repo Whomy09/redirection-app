@@ -3,6 +3,7 @@ import Login from '@/pages/Login.vue'
 import Redirect from '@/pages/redirect.vue'
 import WrongRedirect from '@/pages/wrong-redirect.vue'
 import Redirections from '@/pages/redirections/index.vue'
+import InactiveRedirect from '@/pages/inactive-redirect.vue'
 import RedirectionsDetail from '@/pages/redirections/detail.vue'
 
 import { storeToRefs } from 'pinia'
@@ -50,6 +51,11 @@ const router = createRouter({
       path: '/redirections/:id',
       name: 'redirections-detail',
       component: RedirectionsDetail
+    },
+    {
+      path: '/inactive-redirect',
+      name: 'inactive-redirect',
+      component: InactiveRedirect
     }
   ]
 })
@@ -57,7 +63,7 @@ const router = createRouter({
 router.beforeEach((to, _, next) => {
   const userSession = useUserSession()
   const { user } = storeToRefs(userSession)
-  
+
   if (to.name !== 'login' && !user.value.active) next({ name: 'login' })
   else next()
 })
