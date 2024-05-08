@@ -28,7 +28,7 @@ function getClass(name: string) {
               :key="name"
               class="p-2 hover:bg-gray-100 rounded-md transition ease-in"
               :class="getClass(name)"
-              to="{ name }"
+              :to="{ name }"
             >
               <i :class="icon" class="mr-3" />
               <span>{{ label }}</span>
