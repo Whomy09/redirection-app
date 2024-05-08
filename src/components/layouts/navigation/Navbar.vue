@@ -1,15 +1,32 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { menus } from '@/constants/menus'
+import { useRoute, useRouter } from 'vue-router'
+import { useUserSession } from '@/stores/userSession'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuContent
+} from '@/components/ui/dropdown-menu'
+import Button from '@/components/ui/button/Button.vue'
 
 const route = useRoute()
+const router = useRouter()
+const userSessionStore = useUserSession()
+const { user } = storeToRefs(userSessionStore)
 
 function getClass(name: string) {
   const isActive = route.name === name
 
   const activeClass = 'bg-gray-100'
   return isActive ? activeClass : ''
+}
+
+function handleLogout() {
+  userSessionStore.logout()
+  router.push({ name: 'login' })
 }
 </script>
 
@@ -37,7 +54,22 @@ function getClass(name: string) {
         </SheetContent>
       </Sheet>
 
-      <div class="w-[40px] h-[40px] rounded-full bg-gray-200"></div>
+      <div>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <div class="flex items-center gap-4">
+              <span>{{ user.name }}</span>
+              <div class="w-[40px] h-[40px] rounded-full bg-gray-200"></div>
+            </div>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent>
+            <DropdownMenuItem class="focus:bg-transparent justify-center">
+              <Button class="bg-red-500 hover:bg-red-600" @click="handleLogout">Logout</Button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   </div>
 </template>
