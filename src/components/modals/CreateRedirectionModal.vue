@@ -4,14 +4,18 @@ import { storeToRefs } from 'pinia'
 import Badge from '../ui/badge/Badge.vue'
 import Input from '../ui/input/Input.vue'
 import { truncateString } from '@/helpers'
+import { useDebounceFn } from '@vueuse/core'
 import { computed, onMounted, ref } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers } from '@vuelidate/validators'
+import type { StatusForValidName } from '@/types'
 import { MESSAGE_REQUIRED } from '@/constants/rules'
 import { useUserSession } from '@/stores/userSession'
 import ValidateLabel from '../base/ValidateLabel.vue'
 import Button from '@/components/ui/button/Button.vue'
 import { useRedirectionts } from '@/stores/redirections'
+import { STYLES_FOR_INPUT_VALID_NAME } from '@/constants'
+import { Redirection } from '@/services/models/redirection'
 import type { IRedirectionForm } from '@/types/redirection'
 import { useNotification } from '@/composables/useNotification'
 import {
@@ -40,6 +44,8 @@ const { toastError, toastSuccess } = useNotification()
 
 const link = ref('')
 const isLoading = ref(false)
+const isNameValid = ref<StatusForValidName>('UNVALIDATE')
+const validatingUniqueName = ref(false)
 const { user } = storeToRefs(userSession)
 
 const redirection = ref<IRedirectionForm>({
@@ -47,9 +53,10 @@ const redirection = ref<IRedirectionForm>({
   links: [],
   id: uuidv4()
 })
-
-const textForButton = computed(() => isLoading.value ? 'loading...' : 'Save')
 const v$ = useVuelidate(rules, redirection)
+
+const textForButton = computed(() => (isLoading.value ? 'loading...' : 'Save'))
+const inputClasses = computed(() => STYLES_FOR_INPUT_VALID_NAME[isNameValid.value])
 
 function addLink() {
   if (!link.value) return
@@ -70,12 +77,40 @@ function clearForm() {
   v$.value.$reset()
 }
 
+const debouncedFn = useDebounceFn(async () => {
+  try {
+    if (redirection.value.name === '') {
+      isNameValid.value = 'UNVALIDATE'
+      return
+    }
+    
+    validatingUniqueName.value = true
+    
+    const isValid = await new Redirection().validRedirectionName(redirection.value.name)
+    
+    isNameValid.value = isValid ? 'VALID' : 'INVALID'
+  } catch (error) {
+    toastError('Error al validar el nombre')
+  } finally {
+    validatingUniqueName.value = false
+  }
+}, 500)
+
 async function createRedirection() {
   try {
     isLoading.value = true
+
     const isFormValid = await v$.value.$validate()
+
     if (!isFormValid) return
+
+    if (isNameValid.value !== 'VALID') {
+      toastError('Nombre no valido')
+      return
+    }
+
     await redirectionStore.create(user.value.uid, redirection.value)
+
     clearForm()
     toastSuccess('Redirect created successfully')
   } catch (error) {
@@ -111,7 +146,10 @@ onMounted(() => {
           </div>
           <div class="w-full">
             <label>Name</label>
-            <Input v-model="redirection.name" />
+            <div class="flex gap-4 items-center">
+              <Input v-model="redirection.name" :class="inputClasses" @keyup="debouncedFn" />
+              <i v-if="validatingUniqueName" class="fa-solid fa-spinner text-2xl animate-spin"></i>
+            </div>
             <ValidateLabel :v$="v$.name" />
           </div>
           <div class="w-full">

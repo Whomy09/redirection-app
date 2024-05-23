@@ -1,0 +1,1 @@
+export type StatusForValidName = 'UNVALIDATE' | 'VALID' | 'INVALID'

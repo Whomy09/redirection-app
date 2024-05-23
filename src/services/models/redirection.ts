@@ -8,7 +8,8 @@ import {
   getDoc,
   updateDoc,
   where,
-  query
+  query,
+  limit
 } from 'firebase/firestore'
 
 export class Redirection {
@@ -69,5 +70,13 @@ export class Redirection {
         status: data.status
       }
     })
+  }
+
+  public async validRedirectionName(name: string) {
+    const redirectionsRef = collection(db, 'redirections')
+    const q = query(redirectionsRef, where('name', '==', name), limit(1))
+    const redirectionSnap = await getDocs(q)
+    const existName = redirectionSnap.docs.length === 1
+    return !existName
   }
 }
