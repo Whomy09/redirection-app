@@ -11,6 +11,7 @@ import MainLayout from '@/components/layouts/MainLayout.vue'
 import { useNotification } from '@/composables/useNotification'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import EditRedirectionModal from '@/components/modals/EditRedirectionModal.vue'
+import Statistics from '@/components/Statistics.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -67,7 +68,7 @@ onMounted(async () => {
       </router-link>
     </Button>
 
-    <Card class="h-1/2 mt-8 p-8">
+    <Card class="mt-8 p-8">
       <div class="flex justify-between">
         <CardTitle>Links</CardTitle>
         <div class="flex gap-4">
@@ -97,8 +98,10 @@ onMounted(async () => {
           {{ link }}
         </Badge>
       </div>
+
+      <div class="mt-6">
+        <Statistics />
+      </div>
     </Card>
   </MainLayout>
 </template>
-
-<style scoped></style>
