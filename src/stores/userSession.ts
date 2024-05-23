@@ -1,11 +1,15 @@
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { useStorage } from '@vueuse/core'
 import type { IUser } from '@/types/user'
 import { Auth } from '@/services/models/auth'
 import type { ICredentials } from '@/types/auth'
 import { auth } from '@/services/firebase'
+import { useRedirectionts } from './redirections'
 
 export const useUserSession = defineStore('userSession', () => {
+  const redirectionStore = useRedirectionts()
+
+  const { redirections } = storeToRefs(redirectionStore)
   const accessToken = useStorage('redirection_app_access_token', '')
 
   const user = useStorage('redirection_app_user', {
@@ -34,6 +38,7 @@ export const useUserSession = defineStore('userSession', () => {
       name: '',
       uid: ''
     })
+    redirections.value = []
     auth.signOut()
   }
 
