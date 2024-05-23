@@ -23,9 +23,13 @@ const router = createRouter({
       }
     },
     {
-      path: '/redirect/:id',
+      path: '/:name',
       name: 'redirect',
-      component: Redirect
+      component: Redirect,
+      meta: {
+        can: 'is-user-active',
+        onDeniedRoute: '/login'
+      }
     },
     {
       path: '/wrong-redirect',

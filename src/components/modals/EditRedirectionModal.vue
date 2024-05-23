@@ -110,7 +110,7 @@ onMounted(() => {
           </div>
           <div class="w-full">
             <label>Name</label>
-            <Input v-model="redirection.name" />
+            <Input v-model="redirection.name" disabled />
             <ValidateLabel :v$="v$.name" />
           </div>
           <div class="w-full">

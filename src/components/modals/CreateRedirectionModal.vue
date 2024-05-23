@@ -83,11 +83,11 @@ const debouncedFn = useDebounceFn(async () => {
       isNameValid.value = 'UNVALIDATE'
       return
     }
-    
+
     validatingUniqueName.value = true
-    
+
     const isValid = await new Redirection().validRedirectionName(redirection.value.name)
-    
+
     isNameValid.value = isValid ? 'VALID' : 'INVALID'
   } catch (error) {
     toastError('Error al validar el nombre')
@@ -111,6 +111,7 @@ async function createRedirection() {
 
     await redirectionStore.create(user.value.uid, redirection.value)
 
+    isNameValid.value = 'UNVALIDATE'
     clearForm()
     toastSuccess('Redirect created successfully')
   } catch (error) {
@@ -118,6 +119,11 @@ async function createRedirection() {
   } finally {
     isLoading.value = false
   }
+}
+
+function handleInputNameKeyUp() {
+  redirection.value.name = redirection.value.name.toLocaleLowerCase()
+  debouncedFn()
 }
 
 onMounted(() => {
@@ -147,7 +153,11 @@ onMounted(() => {
           <div class="w-full">
             <label>Name</label>
             <div class="flex gap-4 items-center">
-              <Input v-model="redirection.name" :class="inputClasses" @keyup="debouncedFn" />
+              <Input
+                v-model="redirection.name"
+                :class="inputClasses"
+                @keyup="handleInputNameKeyUp"
+              />
               <i v-if="validatingUniqueName" class="fa-solid fa-spinner text-2xl animate-spin"></i>
             </div>
             <ValidateLabel :v$="v$.name" />

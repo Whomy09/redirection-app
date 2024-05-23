@@ -6,7 +6,7 @@ import { Redirection } from '@/services/models/redirection'
 const route = useRoute()
 const router = useRouter()
 
-const redirectionId = route.params.id as string
+const redirectionName = route.params.name as string
 
 const links = ref<string[]>([])
 
@@ -23,7 +23,7 @@ function redirectUser() {
 }
 
 async function getRedirection() {
-  return await new Redirection().getById(redirectionId)
+  return await new Redirection().getByName(redirectionName)
 }
 
 async function handleRedirectUser() {

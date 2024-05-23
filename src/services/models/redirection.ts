@@ -79,4 +79,15 @@ export class Redirection {
     const existName = redirectionSnap.docs.length === 1
     return !existName
   }
+
+  public async getByName(name: string) {
+    const redirectionsRef = collection(db, 'redirections')
+    const q = query(redirectionsRef, where('name', '==', name), limit(1))
+    const redirectionSnap = await getDocs(q)
+    if (redirectionSnap.docs.length === 0) {
+      throw new Error('Redirection not exist')
+    }
+    const docSnap = redirectionSnap.docs[0]
+    return { id: docSnap.id, ...docSnap.data() } as IRedirection
+  }
 }
