@@ -126,6 +126,19 @@ function handleInputNameKeyUp() {
   debouncedFn()
 }
 
+function clearState() {
+  redirection.value = {
+    name: '',
+    links: [],
+    id: uuidv4()
+  }
+  link.value = ''
+  isLoading.value = false
+  isNameValid.value = 'UNVALIDATE'
+  validatingUniqueName.value = false
+  v$.value.$reset()
+}
+
 onMounted(() => {
   v$.value.$reset()
 })
@@ -135,7 +148,7 @@ onMounted(() => {
   <div>
     <Dialog>
       <DialogTrigger>
-        <Button>
+        <Button @click="clearState">
           <i class="fa-solid fa-plus"></i>
         </Button>
       </DialogTrigger>
