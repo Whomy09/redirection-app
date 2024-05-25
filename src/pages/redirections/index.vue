@@ -1,13 +1,13 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useSearch } from '@/composables/useSearch'
 import Input from '@/components/ui/input/Input.vue'
+import type { IRedirection } from '@/types/redirection'
+import { useRedirectionts } from '@/stores/redirections'
 import MainLayout from '@/components/layouts/MainLayout.vue'
 import RedirectionsTable from '@/components/tables/RedirectionsTable.vue'
 import CreateRedirectionModal from '@/components/modals/CreateRedirectionModal.vue'
-import { useSearch } from '@/composables/useSearch'
-import type { IRedirection } from '@/types/redirection'
-import { useRedirectionts } from '@/stores/redirections'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
 
 const redirectionsStore = useRedirectionts()
 const { redirections } = storeToRefs(redirectionsStore)

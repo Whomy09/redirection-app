@@ -1,5 +1,5 @@
 import { auth, db } from '../firebase'
-import { doc, setDoc } from 'firebase/firestore'
+import { collection, doc, getDocs, setDoc } from 'firebase/firestore'
 import type { IUser } from '@/types/user'
 import type { FormCreateUser } from '@/types/user'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
@@ -26,5 +26,11 @@ export class User {
     await setDoc(docRef, data)
 
     return data
+  }
+
+  public async getAll() {
+    const usersRef = collection(db, 'users')
+    const usersSnap = await getDocs(usersRef)
+    return usersSnap.docs.map((user) => user.data()) as IUser[]
   }
 }
