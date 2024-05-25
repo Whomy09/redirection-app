@@ -1,4 +1,5 @@
 import Home from '@/pages/Home.vue'
+import Users from '@/pages/users.vue'
 import Login from '@/pages/Login.vue'
 import Redirect from '@/pages/redirect.vue'
 import WrongRedirect from '@/pages/wrong-redirect.vue'
@@ -17,19 +18,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: Home,
-      meta: {
-        can: 'is-user-active',
-        onDeniedRoute: '/login'
-      }
     },
     {
       path: '/:name',
       name: 'redirect',
       component: Redirect,
-      meta: {
-        can: 'is-user-active',
-        onDeniedRoute: '/login'
-      }
     },
     {
       path: '/wrong-redirect',
@@ -40,16 +33,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login,
-      meta: {
-        can: 'is-user-inactive',
-        onDeniedRoute: '/'
-      }
     },
     {
       path: '/redirections',
       name: 'redirections',
       component: Redirections,
-      children: []
     },
     {
       path: '/redirections/:id',
@@ -60,6 +48,11 @@ const router = createRouter({
       path: '/inactive-redirect',
       name: 'inactive-redirect',
       component: InactiveRedirect
+    },
+    {
+      path: '/users',
+      name: 'users',
+      component: Users
     }
   ]
 })

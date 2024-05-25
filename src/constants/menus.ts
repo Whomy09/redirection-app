@@ -8,5 +8,10 @@ export const menus = [
     name: 'redirections',
     icon: 'fa-solid fa-link',
     label: 'Redirections'
-  }
+  },
+  {
+    name: 'users',
+    icon: 'fa-solid fa-user',
+    label: 'Users'
+  },
 ]

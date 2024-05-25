@@ -34,7 +34,6 @@
     "vue": "^3.4.21",
     "vue-good-table-next": "^0.2.1",
     "vue-router": "^4.3.0",
-    "vue-simple-acl": "^2.0.2",
     "vue3-apexcharts": "^1.5.3",
     "zod": "^3.23.4"
   },
