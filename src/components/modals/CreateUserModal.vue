@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { ROLES } from '@/constants/roles'
 import useVuelidate from '@vuelidate/core'
+import { helpers } from '@vuelidate/validators'
 import type { FormCreateUser } from '@/types/user'
 import Input from '@/components/ui/input/Input.vue'
 import ValidateLabel from '../base/ValidateLabel.vue'
@@ -24,7 +25,6 @@ import {
   SelectContent,
   SelectTrigger
 } from '@/components/ui/select'
-import { helpers } from '@vuelidate/validators'
 
 const userRules = {
   name: {
@@ -114,7 +114,6 @@ async function createUser() {
           <DialogTitle>Create User</DialogTitle>
           <DialogDescription> This is a form for create a user </DialogDescription>
         </DialogHeader>
-
         <div class="flex flex-col gap-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
@@ -159,7 +158,6 @@ async function createUser() {
             </div>
           </div>
         </div>
-
         <DialogFooter>
           <Button @click="createUser">Save</Button>
         </DialogFooter>
