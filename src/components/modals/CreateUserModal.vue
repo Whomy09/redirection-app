@@ -116,10 +116,10 @@ async function createUser() {
     toastSuccess('User created successfully')
   } catch (error: any) {
     if (error.message === EMAIL_ALREADY_IN_USE) {
-      toastError('El email es ya esta en uso')
+      toastError('This email is in use')
       return 
     }
-    toastError('Error al crear al usuario')
+    toastError('Error creating user')
   } finally {
     isCreatingUser.value = false
   }

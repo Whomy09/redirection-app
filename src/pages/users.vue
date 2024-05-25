@@ -9,7 +9,7 @@ import CreateUserModal from '@/components/modals/CreateUserModal.vue'
     <h2 class="text-2xl font-bold">Users</h2>
     <div class="mt-8">
       <div class="flex gap-4">
-        <Input type="text" placeholder="Buscar..."/>
+        <Input type="text" placeholder="Search..."/>
         <CreateUserModal />
       </div>
     </div>
