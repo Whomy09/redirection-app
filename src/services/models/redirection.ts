@@ -9,7 +9,7 @@ import {
   updateDoc,
   where,
   query,
-  limit
+  limit,
 } from 'firebase/firestore'
 
 export class Redirection {

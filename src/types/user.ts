@@ -1,12 +1,13 @@
 type Role = 'ADMIN' | 'CLIENT' | ''
+type UserStatus = 'ACTIVE' | 'INACTIVE'
 
 export interface IUser {
-  id: string
   uid: string
   name: string
   role: Role
   email: string
-  active: boolean
+  active?: boolean
+  status: UserStatus
   firstTimeToEnter: boolean
 }
 

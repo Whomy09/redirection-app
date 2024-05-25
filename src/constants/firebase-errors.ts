@@ -1,0 +1,1 @@
+export const EMAIL_ALREADY_IN_USE = 'Firebase: Error (auth/email-already-in-use).'

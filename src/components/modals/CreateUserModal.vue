@@ -2,11 +2,14 @@
 import { computed, ref } from 'vue'
 import { ROLES } from '@/constants/roles'
 import useVuelidate from '@vuelidate/core'
+import { User } from '@/services/models/user'
 import { helpers } from '@vuelidate/validators'
 import type { FormCreateUser } from '@/types/user'
 import Input from '@/components/ui/input/Input.vue'
 import ValidateLabel from '../base/ValidateLabel.vue'
 import Button from '@/components/ui/button/Button.vue'
+import { useNotification } from '@/composables/useNotification'
+import { EMAIL_ALREADY_IN_USE } from '@/constants/firebase-errors'
 import { MESSAGE_ALPHA, MESSAGE_EMAIL, MESSAGE_REQUIRED } from '@/constants/rules'
 import {
   Dialog,
@@ -40,6 +43,9 @@ const userRules = {
   }
 }
 
+const { toastError, toastSuccess } = useNotification()
+
+const isCreatingUser = ref(false)
 const user = ref<FormCreateUser>({
   name: '',
   role: '',
@@ -100,6 +106,23 @@ async function createUser() {
   const isPasswordsValid = await vPasswords$.value.$validate()
 
   if (!(isUserFormValid && isPasswordsValid)) return
+
+  user.value.password = handlePassword.value.password
+
+  try {
+    isCreatingUser.value = true
+    await new User().create(user.value)
+    clearState()
+    toastSuccess('User created successfully')
+  } catch (error: any) {
+    if (error.message === EMAIL_ALREADY_IN_USE) {
+      toastError('El email es ya esta en uso')
+      return 
+    }
+    toastError('Error al crear al usuario')
+  } finally {
+    isCreatingUser.value = false
+  }
 }
 </script>
 
@@ -118,31 +141,31 @@ async function createUser() {
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label>Name</label>
-              <Input v-model="user.name" />
+              <Input v-model="user.name" :disabled="isCreatingUser" />
               <ValidateLabel :v$="vUser$.name" />
             </div>
             <div>
               <label>Email</label>
-              <Input v-model="user.email" />
+              <Input v-model="user.email" :disabled="isCreatingUser" />
               <ValidateLabel :v$="vUser$.email" />
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label>Password</label>
-              <Input type="password" v-model="handlePassword.password" />
+              <Input type="password" v-model="handlePassword.password" :disabled="isCreatingUser" />
               <ValidateLabel :v$="vPasswords$.password" />
             </div>
             <div>
               <label>Confirm Password</label>
-              <Input type="password" v-model="handlePassword.confirmPassword" />
+              <Input type="password" v-model="handlePassword.confirmPassword" :disabled="isCreatingUser" />
               <ValidateLabel :v$="vPasswords$.confirmPassword" />
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label>Role</label>
-              <Select v-model="user.role">
+              <Select v-model="user.role" :disabled="isCreatingUser">
                 <SelectTrigger>
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
@@ -159,7 +182,9 @@ async function createUser() {
           </div>
         </div>
         <DialogFooter>
-          <Button @click="createUser">Save</Button>
+          <Button :disabled="isCreatingUser" @click="createUser">{{
+            isCreatingUser ? 'Creating...' : 'Save'
+          }}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
