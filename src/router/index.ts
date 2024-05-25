@@ -10,6 +10,7 @@ import RedirectionsDetail from '@/pages/redirections/detail.vue'
 import { storeToRefs } from 'pinia'
 import { useUserSession } from '@/stores/userSession'
 import { createRouter, createWebHistory } from 'vue-router'
+import { getPermissions } from '@/constants/permissions'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,7 +53,12 @@ const router = createRouter({
     {
       path: '/users',
       name: 'users',
-      component: Users
+      component: Users,
+      beforeEnter: (to, from, next) => {
+        const { IS_ADMIN } = getPermissions()
+        if (IS_ADMIN) next()
+        else next({ name: 'home' })
+      }
     }
   ]
 })

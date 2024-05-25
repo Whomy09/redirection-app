@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { menus } from '@/constants/menus'
+import { getMenus } from '@/constants/menus'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserSession } from '@/stores/userSession'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
@@ -14,6 +14,8 @@ import Button from '@/components/ui/button/Button.vue'
 
 const route = useRoute()
 const router = useRouter()
+
+const menus = getMenus()
 const userSessionStore = useUserSession()
 const { user } = storeToRefs(userSessionStore)
 
@@ -40,16 +42,17 @@ function handleLogout() {
 
         <SheetContent side="left">
           <div class="flex flex-col gap-4 mt-8">
-            <RouterLink
-              v-for="{ name, icon, label } in menus"
-              :key="name"
-              class="p-2 hover:bg-gray-100 rounded-md transition ease-in"
-              :class="getClass(name)"
-              :to="{ name }"
-            >
-              <i :class="icon" class="mr-3" />
-              <span>{{ label }}</span>
-            </RouterLink>
+            <template v-for="{ name, icon, label, visible } in menus" :key="name">
+              <RouterLink
+                v-if="visible"
+                class="p-2 hover:bg-gray-100 rounded-md transition ease-in"
+                :class="getClass(name)"
+                :to="{ name }"
+              >
+                <i :class="icon" class="mr-3" />
+                <span>{{ label }}</span>
+              </RouterLink>
+            </template>
           </div>
         </SheetContent>
       </Sheet>

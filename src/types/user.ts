@@ -1,4 +1,4 @@
-type Role = 'ADMIN' | 'CLIENT' | ''
+export type Role = 'ADMIN' | 'CLIENT' | ''
 type UserStatus = 'ACTIVE' | 'INACTIVE' | ''
 
 export interface IUser {
