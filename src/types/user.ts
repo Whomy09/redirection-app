@@ -1,10 +1,18 @@
+type Role = 'ADMIN' | 'CLIENT' | ''
+
 export interface IUser {
   id: string
   uid: string
   name: string
-  role: string
+  role: Role
   email: string
   active: boolean
-  password?: string
   firstTimeToEnter: boolean
+}
+
+export interface FormCreateUser {
+  name: string
+  role: Role
+  email: string
+  password: string
 }

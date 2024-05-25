@@ -5,7 +5,9 @@ defineProps<{
 </script>
 
 <template>
-  <span v-for="error in v$.$errors" :key="error.$uid" class="text-red-500 text-sm mt-2">
-    {{ error.$message }}
-  </span>
+  <div class="flex flex-col">
+    <span v-for="error in v$.$errors" :key="error.$uid" class="text-red-500 text-xs mt-2">
+      {{ error.$message }}
+    </span>
+  </div>
 </template>
