@@ -17,14 +17,16 @@ import {
   CardContent,
   CardDescription
 } from '@/components/ui/card/'
+import { Auth } from '@/services/models/auth'
+import { User } from '@/services/models/user'
 
 const router = useRouter()
-const { login } = useUserSession()
+const userSession = useUserSession()
 const { toastError, toastSuccess } = useNotification()
 
 const isLoading = ref(false)
 
-const textButton = computed(() => isLoading.value ? 'Loading...' : 'Login')
+const textButton = computed(() => (isLoading.value ? 'Loading...' : 'Login'))
 
 const formSchema = toTypedSchema(
   z.object({
@@ -40,7 +42,17 @@ const form = useForm({
 const onSubmit = form.handleSubmit(async (credentials) => {
   try {
     isLoading.value = true
-    await login(credentials)
+    
+    const { accessToken, uid } = await new Auth().login(credentials)
+    const user = await new User().getByUid(uid)
+    
+    userSession.setUser({
+      ...user,
+      active: true
+    })
+    
+    userSession.setAccessToken(accessToken)
+    
     toastSuccess('Welcome!')
     router.push({ name: 'home' })
   } catch (error) {
@@ -91,7 +103,7 @@ const onSubmit = form.handleSubmit(async (credentials) => {
         </form>
       </CardContent>
       <CardFooter>
-        <Button class="w-full" type="submit" @click="onSubmit" :disabled="isLoading"> 
+        <Button class="w-full" type="submit" @click="onSubmit" :disabled="isLoading">
           {{ textButton }}
         </Button>
       </CardFooter>
