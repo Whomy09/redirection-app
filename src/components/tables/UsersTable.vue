@@ -1,12 +1,20 @@
 <script lang="ts" setup>
 import type { IUser } from '@/types/user'
 import StatusLabel from '../base/StatusLabel.vue'
+import { useSweetalert } from '@/composables/useSweetalert'
 import { columnsUserTable as columns } from '@/constants/columns'
 import EditUserModal from '@/components/modals/EditUserModal.vue'
 
 defineProps<{
   rows: IUser[]
 }>()
+
+const { showQuestion } = useSweetalert()
+
+async function handleDeleteUser() {
+  const isConfirm = await showQuestion('¿Seguro que quieres eliminar este usuario?', '')
+  if (!isConfirm) return
+}
 </script>
 
 <template>
@@ -37,8 +45,9 @@ defineProps<{
         <div v-if="_props.column.field === 'status'">
           <StatusLabel :status="_props.row.status" />
         </div>
-        <div v-if="_props.column.field === 'actions'">
+        <div v-if="_props.column.field === 'actions'" class="flex gap-4">
           <EditUserModal :user-prop="_props.row" />
+          <a @click="handleDeleteUser"><i class="fa-solid fa-trash text-xl hover:cursor-pointer"></i></a>
         </div>
       </template>
     </vue-good-table>
