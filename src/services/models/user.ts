@@ -1,7 +1,7 @@
 import { auth, db } from '../firebase'
 import type { IUser } from '@/types/user'
 import type { FormCreateUser } from '@/types/user'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, deleteUser, signInWithCustomToken, fetchSignInMethodsForEmail  } from 'firebase/auth'
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore'
 
 export class User {

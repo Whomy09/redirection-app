@@ -47,7 +47,7 @@ async function handleDeleteUser() {
         </div>
         <div v-if="_props.column.field === 'actions'" class="flex gap-4">
           <EditUserModal :user-prop="_props.row" />
-          <a @click="handleDeleteUser"><i class="fa-solid fa-trash text-xl hover:cursor-pointer"></i></a>
+          <!-- <a @click="handleDeleteUser"><i class="fa-solid fa-trash text-xl hover:cursor-pointer"></i></a> -->
         </div>
       </template>
     </vue-good-table>
