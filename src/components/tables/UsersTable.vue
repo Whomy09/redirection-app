@@ -2,6 +2,7 @@
 import type { IUser } from '@/types/user'
 import StatusLabel from '../base/StatusLabel.vue'
 import { columnsUserTable as columns } from '@/constants/columns'
+import EditUserModal from '@/components/modals/EditUserModal.vue'
 
 defineProps<{
   rows: IUser[]
@@ -35,6 +36,9 @@ defineProps<{
       <template #table-row="_props">
         <div v-if="_props.column.field === 'status'">
           <StatusLabel :status="_props.row.status" />
+        </div>
+        <div v-if="_props.column.field === 'actions'">
+          <EditUserModal :user-prop="_props.row" />
         </div>
       </template>
     </vue-good-table>

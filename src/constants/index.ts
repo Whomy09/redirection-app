@@ -5,3 +5,14 @@ export const STYLES_FOR_INPUT_VALID_NAME: Record<StatusForValidName, string[]> =
   VALID: ['border-green-500', 'focus-visible:ring-green-500'],
   INVALID: ['border-red-500', 'focus-visible:ring-red-500']
 }
+
+export const USER_STATUS = [
+  {
+    id: 'ACTIVE',
+    value: 'Active'
+  },
+  {
+    id: 'INACTIVE',
+    value: 'Inactive'
+  }
+]
