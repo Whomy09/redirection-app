@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ROLES } from '@/constants/roles'
 import { USER_STATUS } from '@/constants'
 import type { IUser } from '@/types/user'
+import useVuelidate from '@vuelidate/core'
 import Input from '@/components/ui/input/Input.vue'
+import ValidateLabel from '../base/ValidateLabel.vue'
 import Button from '@/components/ui/button/Button.vue'
+import { MESSAGE_ALPHA, MESSAGE_REQUIRED } from '@/constants/rules'
 import {
   Dialog,
   DialogTitle,
@@ -22,9 +25,8 @@ import {
   SelectContent,
   SelectTrigger
 } from '@/components/ui/select'
-import { MESSAGE_ALPHA, MESSAGE_REQUIRED } from '@/constants/rules'
-import useVuelidate from '@vuelidate/core'
-import ValidateLabel from '../base/ValidateLabel.vue'
+import { User } from '@/services/models/user'
+import { useNotification } from '@/composables/useNotification'
 
 const rules = {
   name: {
@@ -43,6 +45,9 @@ const props = defineProps<{
   userProp: IUser
 }>()
 
+const { toastError, toastSuccess } = useNotification()
+
+const isLoading = ref(false)
 const user = ref<IUser>({
   uid: '',
   role: '',
@@ -55,8 +60,21 @@ const user = ref<IUser>({
 const v$ = useVuelidate(rules, user)
 
 async function updateUser() {
-  const isFormValid = await v$.value.$validate()
-  if (!isFormValid) return
+  try {
+    const isFormValid = await v$.value.$validate()
+
+    if (!isFormValid) return
+
+    isLoading.value = true
+
+    await new User().update(user.value.uid, user.value)
+
+    toastSuccess('User successfully updated')
+  } catch (error) {
+    toastError('An error occurred while updating the user')
+  } finally {
+    isLoading.value = false
+  }
 }
 
 function clearState() {
@@ -85,12 +103,12 @@ onMounted(() => {
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label>Name</label>
-              <Input v-model="user.name" />
+              <Input v-model="user.name" :disabled="isLoading" />
               <ValidateLabel :v$="v$.name" />
             </div>
             <div>
               <label>Role</label>
-              <Select v-model="user.role">
+              <Select v-model="user.role" :disabled="isLoading">
                 <SelectTrigger>
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
@@ -108,7 +126,7 @@ onMounted(() => {
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label>Status</label>
-              <Select v-model="user.status">
+              <Select v-model="user.status" :disabled="isLoading">
                 <SelectTrigger>
                   <SelectValue placeholder="Select a status" />
                 </SelectTrigger>
@@ -125,7 +143,9 @@ onMounted(() => {
           </div>
         </div>
         <DialogFooter>
-          <Button @click="updateUser">Update</Button>
+          <Button @click="updateUser" :disabled="isLoading">{{
+            isLoading ? 'Loading...' : 'Update'
+          }}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

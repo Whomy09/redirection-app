@@ -1,8 +1,8 @@
 import { auth, db } from '../firebase'
-import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore'
 import type { IUser } from '@/types/user'
 import type { FormCreateUser } from '@/types/user'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore'
 
 export class User {
   public async create(user: FormCreateUser) {
@@ -37,6 +37,11 @@ export class User {
   public async getByUid(uid: string) {
     const docRef = doc(db, 'users', uid)
     const docSnap = await getDoc(docRef)
-    return docSnap.data() as IUser 
+    return docSnap.data() as IUser
+  }
+
+  public async update(uid: string, data: IUser) {
+    const userRef = doc(db, 'users', uid)
+    await updateDoc(userRef, { ...data })
   }
 }
