@@ -2,23 +2,45 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Redirection } from '@/services/models/redirection'
+import type { Link } from '@/types/redirection'
 
 const route = useRoute()
 const router = useRouter()
 
 const redirectionName = route.params.name as string
 
-const links = ref<string[]>([])
+const links = ref<Link[]>([])
 
-function getRandomLink() {
-  const randomIndex = Math.floor(Math.random() * links.value.length)
-  return links.value[randomIndex]
+function getWeightedIndex() {
+  const cumulativeWeights: number[] = []
+  let totalWeight = 0
+
+  for (const link of links.value) {
+    totalWeight += link.percentage
+    cumulativeWeights.push(totalWeight)
+  }
+
+  const randomWeight = Math.random() * totalWeight
+
+  for (let i = 0; i < cumulativeWeights.length; i++) {
+    if (randomWeight < cumulativeWeights[i]) {
+      return i
+    }
+  }
+
+  return -1
 }
 
 function redirectUser() {
-  const link = getRandomLink()
+  const idxLinkSelected = getWeightedIndex()
+  
+  if (idxLinkSelected === -1) return
+  
+  const link = links.value[idxLinkSelected]
+
   const linkElement = document.createElement('a')
-  linkElement.href = link
+  
+  linkElement.href = link.url
   linkElement.click()
 }
 
