@@ -94,8 +94,8 @@ onMounted(async () => {
       </CardDescription>
 
       <div class="flex flex-wrap gap-1 mt-4">
-        <Badge v-for="(link, index) in redirection?.links" :key="index">
-          {{ link }}
+        <Badge v-for="({ percentage, url }, index) in redirection?.links" :key="index">
+          {{ `${url} - ${percentage}%` }}
         </Badge>
       </div>
 
