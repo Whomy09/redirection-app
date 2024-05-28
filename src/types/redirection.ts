@@ -1,14 +1,16 @@
+export type Link = { url: string; percentage: number }
+
 export interface IRedirectionForm {
   id: string
   name: string
-  links: string[]
+  links: Link[]
 }
 
 export interface IRedirection {
   id: string
   uid: String
   name: string
-  links: string[]
+  links: Link[]
   createdAt: Date
   status: 'ACTIVE' | 'INACTIVE'
 }

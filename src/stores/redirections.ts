@@ -9,7 +9,9 @@ export const useRedirectionts = defineStore('redirections', () => {
   const redirections = useStorage<IRedirection[]>('redirecton_app_redirections', [])
 
   async function create(uid: string, redirectionData: IRedirectionForm) {
-    const redirection = await redirectionDB.create(uid, redirectionData)
+    const { name } = redirectionData
+    const validedName = name.replace(/\s+/g, '-')
+    const redirection = await redirectionDB.create(uid, { ...redirectionData, name: validedName })
     redirections.value.push(redirection as IRedirection)
   }
 

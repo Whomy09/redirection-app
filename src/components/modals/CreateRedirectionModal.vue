@@ -16,7 +16,7 @@ import Button from '@/components/ui/button/Button.vue'
 import { useRedirectionts } from '@/stores/redirections'
 import { STYLES_FOR_INPUT_VALID_NAME } from '@/constants'
 import { Redirection } from '@/services/models/redirection'
-import type { IRedirectionForm } from '@/types/redirection'
+import type { IRedirectionForm, Link } from '@/types/redirection'
 import { useNotification } from '@/composables/useNotification'
 import {
   Dialog,
@@ -42,12 +42,15 @@ const userSession = useUserSession()
 const redirectionStore = useRedirectionts()
 const { toastError, toastSuccess } = useNotification()
 
-const link = ref('')
 const isLoading = ref(false)
-const isNameValid = ref<StatusForValidName>('UNVALIDATE')
 const validatingUniqueName = ref(false)
 const { user } = storeToRefs(userSession)
+const isNameValid = ref<StatusForValidName>('UNVALIDATE')
 
+const link = ref<Link>({
+  url: '',
+  percentage: 0
+})
 const redirection = ref<IRedirectionForm>({
   name: '',
   links: [],
@@ -57,11 +60,21 @@ const v$ = useVuelidate(rules, redirection)
 
 const textForButton = computed(() => (isLoading.value ? 'loading...' : 'Save'))
 const inputClasses = computed(() => STYLES_FOR_INPUT_VALID_NAME[isNameValid.value])
+const validPercentage = computed(
+  () => redirection.value.links.reduce((acc, crr) => acc + crr.percentage, 0) <= 100
+)
 
 function addLink() {
-  if (!link.value) return
+  const { url: _link, percentage } = link.value
+
+  if (!_link || percentage <= 0 || percentage > 100) return
+
   redirection.value.links.push(link.value)
-  link.value = ''
+
+  link.value = {
+    url: '',
+    percentage: 0
+  }
 }
 
 function removeLink(index: number) {
@@ -103,6 +116,7 @@ async function createRedirection() {
     const isFormValid = await v$.value.$validate()
 
     if (!isFormValid) return
+    if (!validPercentage.value) return
 
     if (isNameValid.value !== 'VALID') {
       toastError('Nombre no valido')
@@ -132,7 +146,10 @@ function clearState() {
     links: [],
     id: uuidv4()
   }
-  link.value = ''
+  link.value = {
+    url: '',
+    percentage: 0
+  }
   isLoading.value = false
   isNameValid.value = 'UNVALIDATE'
   validatingUniqueName.value = false
@@ -179,18 +196,22 @@ onMounted(() => {
             <label>Links</label>
             <div>
               <div class="flex gap-4">
-                <Input v-model="link" />
-                <Button @click="addLink">
+                <Input v-model="link.url" class="w-[70%]" />
+                <Input type="number" v-model="link.percentage" class="w-[20%]" />
+                <Button class="w-[10%]" @click="addLink">
                   <i class="fa-solid fa-plus"></i>
                 </Button>
               </div>
               <ValidateLabel :v$="v$.links" />
+              <span v-if="!validPercentage" class="text-red-500 text-xs"
+                >La suma de los porcentajes no puede ser mayor a 100%</span
+              >
             </div>
           </div>
           <div class="flex flex-wrap gap-2">
             <Badge v-for="(link, index) in redirection.links" :key="index" class="flex gap-3">
               <span>
-                {{ truncateString(link, 10) }}
+                {{ `${truncateString(link.url, 25)} - ${link.percentage}%` }}
               </span>
               <i class="fa-solid fa-xmark hover:cursor-pointer" @click="removeLink(index)" />
             </Badge>
