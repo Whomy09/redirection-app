@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { v4 as uuidv4 } from 'uuid'
 import Badge from '../ui/badge/Badge.vue'
 import Input from '../ui/input/Input.vue'
 import { truncateString } from '@/helpers'
@@ -49,6 +50,7 @@ const { toastError, toastSuccess } = useNotification()
 const link = ref<Link>({
   url: '',
   name: '',
+  id: uuidv4(),
   percentage: 0
 })
 const isLoading = ref(false)
@@ -79,6 +81,7 @@ function addLink() {
   link.value = {
     url: '',
     name: '',
+    id: uuidv4(),
     percentage: 0
   }
 }
