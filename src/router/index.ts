@@ -67,7 +67,8 @@ router.beforeEach((to, _, next) => {
   const userSession = useUserSession()
   const { user } = storeToRefs(userSession)
 
-  if (to.name !== 'login' && !user.value.active) next({ name: 'login' })
+  if (to.name === 'redirect' || to.name === 'wrong-redirect') next()
+  else if (to.name !== 'login' && !user.value.active) next({ name: 'login' })
   else next()
 })
 
