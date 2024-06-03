@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
+import type { Link } from '@/types/redirection'
 import { useRoute, useRouter } from 'vue-router'
 import { Redirection } from '@/services/models/redirection'
-import type { Link } from '@/types/redirection'
 
 const route = useRoute()
 const router = useRouter()

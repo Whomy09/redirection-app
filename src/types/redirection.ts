@@ -1,4 +1,8 @@
-export type Link = { url: string; percentage: number }
+export type Link = {
+  name: string
+  url: string
+  percentage: number
+}
 
 export interface IRedirectionForm {
   id: string
