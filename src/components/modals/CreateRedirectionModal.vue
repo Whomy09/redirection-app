@@ -56,6 +56,7 @@ const isNameValid = ref<StatusForValidName>('UNVALIDATE')
 const link = ref<Link>({
   url: '',
   name: '',
+  id: uuidv4(),
   percentage: 0
 })
 const redirection = ref<IRedirectionForm>({
@@ -81,6 +82,7 @@ function addLink() {
   link.value = {
     url: '',
     name: '',
+    id: uuidv4(),
     percentage: 0
   }
 }
@@ -157,6 +159,7 @@ function clearState() {
   link.value = {
     url: '',
     name: '',
+    id: uuidv4(),
     percentage: 0
   }
   isLoading.value = false
