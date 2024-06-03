@@ -70,8 +70,12 @@ const validPercentage = computed(
 const v$ = useVuelidate(rules, redirection)
 
 function addLink() {
-  if (!link.value) return
+  const { url: _link, percentage, name } = link.value
+
+  if ((!name && !_link) || percentage <= 0 || percentage > 100) return
+
   redirection.value.links.push(link.value)
+  
   link.value = {
     url: '',
     name: '',
@@ -123,7 +127,7 @@ onMounted(() => {
           <i class="fa-solid fa-pen-to-square text-black"></i>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent class="max-w-xl" >
         <DialogHeader>
           <DialogTitle>Update Redirection</DialogTitle>
           <DialogDescription> This is a form for update a redirection </DialogDescription>
@@ -139,20 +143,26 @@ onMounted(() => {
             <Input v-model="redirection.name" disabled />
             <ValidateLabel :v$="v$.name" />
           </div>
-          <div class="w-full">
-            <label>Links</label>
-            <div>
-              <div class="flex gap-4">
-                <Input v-model="link.url" class="w-[70%]" />
-                <Input type="number" v-model="link.percentage" class="w-[20%]" />
+          <div>
+            <div class="flex items-center gap-4">
+              <div>
+                <span>Link Name</span>
+                <Input type="text" v-model="link.name" />
+              </div>
+              <div>
+                <span>Link</span>
+                <Input type="text" v-model="link.url" />
+              </div>
+              <div class="w-[15%]">
+                <span>%</span>
+                <Input type="number" v-model="link.percentage" />
+              </div>
+              <div>
+                <p class="text-transparent">*</p>
                 <Button class="w-[10%]" @click="addLink">
                   <i class="fa-solid fa-plus"></i>
                 </Button>
               </div>
-              <ValidateLabel :v$="v$.links" />
-              <span v-if="!validPercentage" class="text-red-500 text-xs"
-                >La suma de los porcentajes no puede ser mayor a 100%</span
-              >
             </div>
           </div>
           <div class="flex flex-wrap gap-2">
