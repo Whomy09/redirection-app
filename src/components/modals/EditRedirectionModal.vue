@@ -2,36 +2,42 @@
 import Badge from '../ui/badge/Badge.vue'
 import Input from '../ui/input/Input.vue'
 import { truncateString } from '@/helpers'
-import { computed, onMounted, ref, watch } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers } from '@vuelidate/validators'
 import { MESSAGE_REQUIRED } from '@/constants/rules'
 import ValidateLabel from '../base/ValidateLabel.vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import Button from '@/components/ui/button/Button.vue'
-import type { IRedirection, Link } from '@/types/redirection'
 import { useRedirectionts } from '@/stores/redirections'
+import type { IRedirection, Link } from '@/types/redirection'
 import { useNotification } from '@/composables/useNotification'
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
+  DialogTitle,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger
+  DialogContent,
+  DialogTrigger,
+  DialogDescription
 } from '@/components/ui/dialog'
 
 const rules = {
+  uid: {},
+  status: {},
+  createdAt: {},
   id: { MESSAGE_REQUIRED },
   name: { MESSAGE_REQUIRED },
   links: {
-    minLeng: helpers.withMessage('Debe de ingresar al menos un link', (value: string[]) => {
+    minLength: helpers.withMessage('Debe de ingresar al menos un link', (value: Link[]) => {
       return value.length > 0
-    })
-  },
-  uid: {},
-  createdAt: {},
-  status: {}
+    }),
+    hundredPercent: helpers.withMessage(
+      'La sumatoria de los procentajes siempre debe ser 100%',
+      (value: Link[]) => {
+        return value.reduce((acc, { percentage }) => acc + percentage, 0) === 100
+      }
+    )
+  }
 }
 
 const emit = defineEmits(['update'])
@@ -80,14 +86,14 @@ function removeLink(index: number) {
 async function updateRedirection() {
   try {
     isLoading.value = true
-    
+
     const isFormValid = await v$.value.$validate()
-    
+
     if (!isFormValid) return
     if (!validPercentage.value) return
-    
+
     await redirectionStore.update(redirection.value.id, redirection.value)
-    
+
     emit('update')
     toastSuccess('Redirect update successfully')
   } catch (error) {
