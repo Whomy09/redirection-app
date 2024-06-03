@@ -42,6 +42,7 @@ const { toastError, toastSuccess } = useNotification()
 
 const link = ref<Link>({
   url: '',
+  name: '',
   percentage: 0
 })
 const isLoading = ref(false)
@@ -67,6 +68,7 @@ function addLink() {
   redirection.value.links.push(link.value)
   link.value = {
     url: '',
+    name: '',
     percentage: 0
   }
 }

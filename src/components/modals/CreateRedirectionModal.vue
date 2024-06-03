@@ -32,9 +32,15 @@ const rules = {
   id: { MESSAGE_REQUIRED },
   name: { MESSAGE_REQUIRED },
   links: {
-    minLeng: helpers.withMessage('Debe de ingresar al menos un link', (value: string[]) => {
+    minLength: helpers.withMessage('Debe de ingresar al menos un link', (value: Link[]) => {
       return value.length > 0
-    })
+    }),
+    hundredPercent: helpers.withMessage(
+      'La sumatoria de los procentajes siempre debe ser 100%',
+      (value: Link[]) => {
+        return value.reduce((acc, { percentage }) => acc + percentage, 0) === 100
+      }
+    )
   }
 }
 
@@ -67,7 +73,7 @@ const validPercentage = computed(
 
 function addLink() {
   const { url: _link, percentage, name } = link.value
-  
+
   if ((!name && !_link) || percentage <= 0 || percentage > 100) return
 
   redirection.value.links.push(link.value)
@@ -224,7 +230,7 @@ onMounted(() => {
           <div class="flex flex-wrap gap-2">
             <Badge v-for="(link, index) in redirection.links" :key="index" class="flex gap-3">
               <span>
-                {{  `${link.name} - ${truncateString(link.url, 25)} - ${link.percentage}%` }}
+                {{ `${link.name} - ${truncateString(link.url, 25)} - ${link.percentage}%` }}
               </span>
               <i class="fa-solid fa-xmark hover:cursor-pointer" @click="removeLink(index)" />
             </Badge>
