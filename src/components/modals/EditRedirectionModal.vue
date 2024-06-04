@@ -170,12 +170,12 @@ onMounted(() => {
           </div>
           <div class="flex flex-wrap gap-2">
             <Badge
-              v-for="({ percentage, url }, index) in redirection.links"
+              v-for="({ percentage, url, name }, index) in redirection.links"
               :key="index"
               class="flex gap-3"
             >
               <span>
-                {{ `${truncateString(url, 25)} - ${percentage}%` }}
+                {{ `${name} - ${truncateString(url, 25)} - ${percentage}%` }}
               </span>
               <i class="fa-solid fa-xmark hover:cursor-pointer" @click="removeLink(index)" />
             </Badge>
