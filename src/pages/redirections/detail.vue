@@ -49,7 +49,7 @@ async function updateRedirectionStatus() {
 
 function copyToClipboard() {
   if (!redirection.value) return
-  navigator.clipboard.writeText(`https://redirection-app-141e9.web.app/${redirection.value.name}`)
+  navigator.clipboard.writeText(`app.redirectionlink.com/${redirection.value.name}`)
   toastSuccess('Link copied to clipboard')
 }
 
@@ -84,7 +84,7 @@ onMounted(async () => {
       <CardDescription class="flex flex-col gap-1">
         <div class="flex gap-1 items-center">
           <span class="font-bold text-gray-900">Redirection link:</span>
-          <span>{{ `https://redirection-app-141e9.web.app/${redirection?.name}` }}</span>
+          <span>{{ `app.redirectionlink.com/${redirection?.name}` }}</span>
           <i
             class="fa-solid fa-copy text-lg text-black hover:cursor-pointer"
             @click="copyToClipboard"
