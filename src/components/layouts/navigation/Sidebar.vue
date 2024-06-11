@@ -37,8 +37,9 @@ function handleLogout() {
   >
     <div>
       <div class="flex items-center gap-4">
-        <i class="fa-solid fa-arrows-up-down-left-right text-xl"></i>
-        <h2 class="text-xl font-bold">Redirection App</h2>
+        <img src="/assets/logo.png" width="150" height="150" />
+        <!-- <i class="fa-solid fa-arrows-up-down-left-right text-xl"></i>
+        <h2 class="text-xl font-bold">Redirection App</h2> -->
       </div>
 
       <div class="flex flex-col gap-4 mt-8">
