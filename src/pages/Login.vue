@@ -42,17 +42,17 @@ const form = useForm({
 const onSubmit = form.handleSubmit(async (credentials) => {
   try {
     isLoading.value = true
-    
+
     const { accessToken, uid } = await new Auth().login(credentials)
     const user = await new User().getByUid(uid)
-    
+
     userSession.setUser({
       ...user,
       active: true
     })
-    
+
     userSession.setAccessToken(accessToken)
-    
+
     toastSuccess('Welcome!')
     router.push({ name: 'home' })
   } catch (error) {
@@ -67,7 +67,9 @@ const onSubmit = form.handleSubmit(async (credentials) => {
   <div class="h-screen flex justify-center items-center">
     <Card class="w-full max-w-sm">
       <CardHeader>
-        <CardTitle class="text-2xl"> Login </CardTitle>
+        <div class="flex justify-center mb-4">
+          <img class="margin-x-auto" src="/assets/logo.png" width="200" height="200" />
+        </div>
         <CardDescription> Enter your email below to login to your account. </CardDescription>
       </CardHeader>
       <CardContent class="grid gap-4">
