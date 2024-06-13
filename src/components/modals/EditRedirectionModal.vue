@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import Badge from '../ui/badge/Badge.vue'
 import Input from '../ui/input/Input.vue'
-import { truncateString } from '@/helpers'
+import { copyObject, truncateString } from '@/helpers'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers } from '@vuelidate/validators'
 import { MESSAGE_REQUIRED } from '@/constants/rules'
@@ -60,7 +60,7 @@ const redirection = ref<IRedirection>({
   links: [],
   uid: '',
   status: 'ACTIVE',
-  createdAt: new Date(),
+  createdAt: new Date()
 })
 
 const textForButton = computed(() => (isLoading.value ? 'loading...' : 'Update'))
@@ -76,7 +76,7 @@ function addLink() {
   if ((!name && !_link) || percentage <= 0 || percentage > 100) return
 
   redirection.value.links.push(link.value)
-  
+
   link.value = {
     url: '',
     name: '',
@@ -112,7 +112,7 @@ async function updateRedirection() {
 watch(
   () => props.redirectionProp,
   (newRedirection) => {
-    redirection.value = JSON.parse(JSON.stringify(newRedirection))
+    redirection.value = copyObject<IRedirection>(newRedirection)
   }
 )
 
@@ -129,7 +129,7 @@ onMounted(() => {
           <i class="fa-solid fa-pen-to-square text-black"></i>
         </Button>
       </DialogTrigger>
-      <DialogContent class="max-w-xl" >
+      <DialogContent class="max-w-xl">
         <DialogHeader>
           <DialogTitle>Update Redirection</DialogTitle>
           <DialogDescription> This is a form for update a redirection </DialogDescription>
