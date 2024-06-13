@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { v4 as uuidv4 } from 'uuid'
-import Badge from '../ui/badge/Badge.vue'
+import { copyObject } from '@/helpers'
 import Input from '../ui/input/Input.vue'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers } from '@vuelidate/validators'
@@ -9,7 +9,6 @@ import { MESSAGE_REQUIRED } from '@/constants/rules'
 import ValidateLabel from '../base/ValidateLabel.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import Button from '@/components/ui/button/Button.vue'
-import { copyObject, truncateString } from '@/helpers'
 import { useRedirectionts } from '@/stores/redirections'
 import type { IRedirection, Link } from '@/types/redirection'
 import { useNotification } from '@/composables/useNotification'
@@ -50,6 +49,7 @@ const { toastError, toastSuccess } = useNotification()
 
 const isLoading = ref(false)
 const isEditLink = ref(false)
+const isModalOpen = ref(false)
 const link = ref<Link>({
   url: '',
   name: '',
@@ -129,12 +129,12 @@ async function updateRedirection() {
   }
 }
 
-watch(
-  () => props.redirectionProp,
-  (newRedirection) => {
-    redirection.value = copyObject<IRedirection>(newRedirection)
+watch(isModalOpen, (isModalOpen) => {
+  if (isModalOpen) {
+    redirection.value = copyObject<IRedirection>(props.redirectionProp)
+    resetStateLink()
   }
-)
+})
 
 onMounted(() => {
   v$.value.$reset()
@@ -143,7 +143,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <Dialog>
+    <Dialog v-model:open="isModalOpen">
       <DialogTrigger>
         <Button class="bg-transaparent hover:bg-slate-100">
           <i class="fa-solid fa-pen-to-square text-black" />
