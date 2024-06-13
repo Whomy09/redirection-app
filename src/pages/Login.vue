@@ -45,6 +45,11 @@ const onSubmit = form.handleSubmit(async (credentials) => {
     const { accessToken, uid } = await new Auth().login(credentials)
     const user = await new User().getByUid(uid)
 
+    if (!user.active) {
+      toastError('Usuario inactivo!')
+      return
+    }
+
     userSession.setUser({
       ...user,
       active: true
