@@ -1,26 +1,42 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import type { IUser } from '@/types/user'
+import { useUsers } from '@/stores/users'
 import { User } from '@/services/models/user'
+import { computed, onMounted, ref } from 'vue'
 import { useSearch } from '@/composables/useSearch'
 import Input from '@/components/ui/input/Input.vue'
 import UsersTable from '@/components/tables/UsersTable.vue'
 import MainLayout from '@/components/layouts/MainLayout.vue'
+import { useNotification } from '@/composables/useNotification'
 import CreateUserModal from '@/components/modals/CreateUserModal.vue'
 import MultipleSkeleton from '@/components/base/MultipleSkeleton.vue'
 
-const users = ref<IUser[]>([])
+const usersStore = useUsers()
+const { setUsers } = usersStore
+const { toastError } = useNotification()
+const { users } = storeToRefs(usersStore)
 
 const { isSearching, searchItems, searchTerm } = useSearch<IUser>(['name', 'email'], users)
 
 const isLoadingTable = ref(false)
 
-const rows = computed(() => isSearching.value ? searchItems.value : users.value)
+const rows = computed(() => (isSearching.value ? searchItems.value : users.value))
+
+async function getUsers() {
+  try {
+    isLoadingTable.value = true
+    const usersResponse = await new User().getAll()
+    setUsers(usersResponse)
+  } catch (error) {
+    toastError(`Error al obtener los usuarios ${error}`)
+  } finally {
+    isLoadingTable.value = false
+  }
+}
 
 onMounted(async () => {
-  isLoadingTable.value = true
-  users.value = await new User().getAll()
-  isLoadingTable.value = false
+  await getUsers()
 })
 </script>
 

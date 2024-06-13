@@ -4,6 +4,7 @@ import { copyObject } from '@/helpers'
 import { ROLES } from '@/constants/roles'
 import { USER_STATUS } from '@/constants'
 import type { IUser } from '@/types/user'
+import { useUsers } from '@/stores/users'
 import useVuelidate from '@vuelidate/core'
 import { User } from '@/services/models/user'
 import Input from '@/components/ui/input/Input.vue'
@@ -46,6 +47,8 @@ const props = defineProps<{
   userProp: IUser
 }>()
 
+const usersStore = useUsers()
+const { setUser } = usersStore
 const { toastError, toastSuccess } = useNotification()
 
 const isLoading = ref(false)
@@ -69,7 +72,8 @@ async function updateUser() {
     isLoading.value = true
 
     await new User().update(user.value.uid, user.value)
-
+    setUser(user.value)
+    
     toastSuccess('User successfully updated')
   } catch (error) {
     toastError('An error occurred while updating the user')
