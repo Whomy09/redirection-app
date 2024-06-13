@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
+import { copyObject } from '@/helpers'
 import { ROLES } from '@/constants/roles'
 import { USER_STATUS } from '@/constants'
 import type { IUser } from '@/types/user'
 import useVuelidate from '@vuelidate/core'
+import { User } from '@/services/models/user'
 import Input from '@/components/ui/input/Input.vue'
 import ValidateLabel from '../base/ValidateLabel.vue'
 import Button from '@/components/ui/button/Button.vue'
+import { useNotification } from '@/composables/useNotification'
 import { MESSAGE_ALPHA, MESSAGE_REQUIRED } from '@/constants/rules'
 import {
   Dialog,
@@ -25,8 +28,6 @@ import {
   SelectContent,
   SelectTrigger
 } from '@/components/ui/select'
-import { User } from '@/services/models/user'
-import { useNotification } from '@/composables/useNotification'
 
 const rules = {
   name: {
@@ -82,7 +83,7 @@ function clearState() {
 }
 
 onMounted(() => {
-  user.value = JSON.parse(JSON.stringify(props.userProp))
+  user.value = copyObject<IUser>(props.userProp)
 })
 </script>
 
