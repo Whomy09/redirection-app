@@ -17,3 +17,7 @@ export function formatDate(value: number | string | Date) {
   else date = toDate(value)
   return format(date, 'dd/MM/yyyy')
 }
+
+export function copyObject<T>(obj: T) {
+  return JSON.parse(JSON.stringify(obj)) as T
+}

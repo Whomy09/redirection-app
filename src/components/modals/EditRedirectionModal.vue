@@ -47,21 +47,20 @@ const props = defineProps<{ redirectionProp: IRedirection }>()
 const redirectionStore = useRedirectionts()
 const { toastError, toastSuccess } = useNotification()
 
+const isLoading = ref(false)
 const link = ref<Link>({
   url: '',
   name: '',
   id: uuidv4(),
   percentage: 0
 })
-const isLoading = ref(false)
-
 const redirection = ref<IRedirection>({
   id: '',
   name: '',
   links: [],
   uid: '',
+  status: 'ACTIVE',
   createdAt: new Date(),
-  status: 'ACTIVE'
 })
 
 const textForButton = computed(() => (isLoading.value ? 'loading...' : 'Update'))
