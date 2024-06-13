@@ -13,7 +13,7 @@ const emit = defineEmits(['action', 'close'])
 <template>
   <div>
     <Badge class="flex gap-3">
-      <div @click="() => emit('action')">
+      <div class="cursor-pointer" @click="() => emit('action')">
         <span>
           {{ `${link.name} - ${truncateString(link.url, 25)} - ${link.percentage}%` }}
         </span>

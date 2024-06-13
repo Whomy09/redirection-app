@@ -49,6 +49,7 @@ const redirectionStore = useRedirectionts()
 const { toastError, toastSuccess } = useNotification()
 
 const isLoading = ref(false)
+const isEditLink = ref(false)
 const link = ref<Link>({
   url: '',
   name: '',
@@ -71,6 +72,15 @@ const validPercentage = computed(
 
 const v$ = useVuelidate(rules, redirection)
 
+function resetStateLink() {
+  link.value = {
+    url: '',
+    name: '',
+    id: uuidv4(),
+    percentage: 0
+  }
+}
+
 function addLink() {
   const { url: _link, percentage, name } = link.value
 
@@ -78,12 +88,21 @@ function addLink() {
 
   redirection.value.links.push(link.value)
 
-  link.value = {
-    url: '',
-    name: '',
-    id: uuidv4(),
-    percentage: 0
-  }
+  resetStateLink()
+}
+
+function handleEditLink(linkToEdit: Link) {
+  link.value = copyObject<Link>(linkToEdit)
+  isEditLink.value = true
+}
+
+function editLink() {
+  const { links } = redirection.value
+  redirection.value.links = links.map((oldLink) =>
+    oldLink.id === link.value.id ? link.value : oldLink
+  )
+  resetStateLink()
+  isEditLink.value = false
 }
 
 function removeLink(id: string) {
@@ -127,7 +146,7 @@ onMounted(() => {
     <Dialog>
       <DialogTrigger>
         <Button class="bg-transaparent hover:bg-slate-100">
-          <i class="fa-solid fa-pen-to-square text-black"></i>
+          <i class="fa-solid fa-pen-to-square text-black" />
         </Button>
       </DialogTrigger>
       <DialogContent class="max-w-xl">
@@ -162,15 +181,22 @@ onMounted(() => {
               </div>
               <div>
                 <p class="text-transparent">*</p>
-                <Button class="w-[10%]" @click="addLink">
-                  <i class="fa-solid fa-plus"></i>
+                <Button v-if="isEditLink" @click="editLink">
+                  <i class="fa-solid fa-pen-to-square" />
+                </Button>
+                <Button v-else class="w-[10%]" @click="addLink">
+                  <i class="fa-solid fa-plus" />
                 </Button>
               </div>
             </div>
           </div>
           <div class="flex flex-wrap gap-2">
             <div v-for="link in redirection.links" :key="link.id">
-              <BadgeLink :link @close="() => removeLink(link.id)" />
+              <BadgeLink
+                :link
+                @action="() => handleEditLink(link)"
+                @close="() => removeLink(link.id)"
+              />
             </div>
           </div>
         </div>
