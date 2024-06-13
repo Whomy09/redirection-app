@@ -2,13 +2,14 @@
 import { v4 as uuidv4 } from 'uuid'
 import Badge from '../ui/badge/Badge.vue'
 import Input from '../ui/input/Input.vue'
-import { copyObject, truncateString } from '@/helpers'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers } from '@vuelidate/validators'
+import BadgeLink from '../shared/BadgeLink.vue'
 import { MESSAGE_REQUIRED } from '@/constants/rules'
 import ValidateLabel from '../base/ValidateLabel.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import Button from '@/components/ui/button/Button.vue'
+import { copyObject, truncateString } from '@/helpers'
 import { useRedirectionts } from '@/stores/redirections'
 import type { IRedirection, Link } from '@/types/redirection'
 import { useNotification } from '@/composables/useNotification'
@@ -85,8 +86,8 @@ function addLink() {
   }
 }
 
-function removeLink(index: number) {
-  redirection.value.links = redirection.value.links.filter((_, idx) => idx !== index)
+function removeLink(id: string) {
+  redirection.value.links = redirection.value.links.filter((link) => link.id !== id)
 }
 
 async function updateRedirection() {
@@ -168,16 +169,9 @@ onMounted(() => {
             </div>
           </div>
           <div class="flex flex-wrap gap-2">
-            <Badge
-              v-for="({ percentage, url, name }, index) in redirection.links"
-              :key="index"
-              class="flex gap-3"
-            >
-              <span>
-                {{ `${name} - ${truncateString(url, 25)} - ${percentage}%` }}
-              </span>
-              <i class="fa-solid fa-xmark hover:cursor-pointer" @click="removeLink(index)" />
-            </Badge>
+            <div v-for="link in redirection.links" :key="link.id">
+              <BadgeLink :link @close="() => removeLink(link.id)" />
+            </div>
           </div>
         </div>
         <DialogFooter>
