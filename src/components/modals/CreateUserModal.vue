@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
+import { useUsers } from '@/stores/users'
 import { ROLES } from '@/constants/roles'
 import useVuelidate from '@vuelidate/core'
 import { User } from '@/services/models/user'
@@ -29,6 +30,7 @@ import {
   SelectTrigger
 } from '@/components/ui/select'
 
+
 const userRules = {
   name: {
     MESSAGE_REQUIRED,
@@ -42,7 +44,8 @@ const userRules = {
     MESSAGE_EMAIL
   }
 }
-
+const usersStore = useUsers()
+const { addUser } = usersStore
 const { toastError, toastSuccess } = useNotification()
 
 const isCreatingUser = ref(false)
@@ -111,8 +114,9 @@ async function createUser() {
 
   try {
     isCreatingUser.value = true
-    await new User().create(user.value)
+    const newUser = await new User().create(user.value)
     clearState()
+    addUser(newUser)
     toastSuccess('User created successfully')
   } catch (error: any) {
     if (error.message === EMAIL_ALREADY_IN_USE) {

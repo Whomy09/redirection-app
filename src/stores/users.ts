@@ -14,8 +14,13 @@ export const useUsers = defineStore('users', () => {
     users.value = users.value.map((oldUser) => (oldUser.uid === newUser.uid ? newUser : oldUser))
   }
 
+  function addUser(newUser: IUser) {
+    users.value.push(newUser)
+  }
+
   return {
     users,
+    addUser,
     setUser,
     setUsers
   }
