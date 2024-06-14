@@ -17,7 +17,11 @@ import Sidebar from './navigation/Sidebar.vue'
 
       <!-- WhatsApp Icon -->
       <div class="absolute bottom-4 right-4 lg:bottom-6 lg:right-6">
-        <a class="flex items-center gap-2 animate-bounce" href="https://wa.me/573237220514" target="_blank">
+        <a
+          class="flex items-center gap-2 animate-bounce"
+          href="https://wa.me/573237220514"
+          target="_blank"
+        >
           <span class="font-bold text-xl text-green-500 hover:text-green-600">¡Ayuda!</span>
           <i
             class="fa-brands fa-square-whatsapp text-[64px] text-green-500 hover:text-green-600 transition-colors duration-300"
