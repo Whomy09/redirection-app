@@ -29,6 +29,7 @@
     "sweetalert2": "^11.10.8",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "typesaurus": "^10.7.0",
     "uuid": "^9.0.1",
     "vee-validate": "^4.12.6",
     "vue": "^3.4.21",
