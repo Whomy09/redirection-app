@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSearch } from '@/composables/useSearch'
 import Input from '@/components/ui/input/Input.vue'
@@ -8,6 +8,7 @@ import { useRedirectionts } from '@/stores/redirections'
 import MainLayout from '@/components/layouts/MainLayout.vue'
 import RedirectionsTable from '@/components/tables/RedirectionsTable.vue'
 import CreateRedirectionModal from '@/components/modals/CreateRedirectionModal.vue'
+import { db } from '@/services/typesaurus'
 
 const redirectionsStore = useRedirectionts()
 const { redirections } = storeToRefs(redirectionsStore)
@@ -18,6 +19,22 @@ const { isSearching, searchItems, searchTerm } = useSearch<IRedirection>(
 )
 
 const rows = computed(() => (isSearching.value ? searchItems.value : redirections.value))
+
+async function test() {
+  const res = await db.books.query(($) => $.field('title').eq('Titulo 4'))
+  const data = res.map((doc) => doc.data)
+  console.log(data)
+}
+
+db.books.all().on(($) => {
+  $.forEach((book) => {
+    console.log(book.data.title)
+  })
+})
+
+onMounted(async () => {
+  await test()
+})
 </script>
 
 <template>
